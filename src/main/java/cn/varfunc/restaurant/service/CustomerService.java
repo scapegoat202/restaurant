@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -54,5 +55,37 @@ public class CustomerService {
      */
     public Customer updateLastAccessTime(Customer customer) {
         return this.customer.save(customer.setLastAccessDate(LocalDateTime.now()));
+    }
+
+    /**
+     * Modify customer information by given id.
+     */
+    public Customer modifyInformation(long id, CustomerForm form) {
+        Customer customer = findById(id);
+        boolean isModified = false;
+
+        if (Objects.nonNull(form.getName()) &&
+                !Objects.equals(form.getName(), customer.getName())) {
+            customer.setName(form.getName());
+            isModified = true;
+        }
+
+        if (Objects.nonNull(form.getEmail()) &&
+                !Objects.equals(form.getEmail(), customer.getEmail())) {
+            customer.setEmail(form.getEmail());
+            isModified = true;
+        }
+
+        Gender gender = Gender.parse(form.getGender());
+        if (Objects.nonNull(form.getGender()) &&
+                !Objects.equals(gender, customer.getGender())) {
+            customer.setGender(gender);
+            isModified = true;
+        }
+
+        if (isModified) {
+            customer = this.customer.save(customer);
+        }
+        return customer;
     }
 }
