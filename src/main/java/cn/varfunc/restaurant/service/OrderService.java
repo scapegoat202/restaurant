@@ -45,6 +45,13 @@ public class OrderService {
     }
 
     /**
+     * Get all orders of specified order status
+     */
+    public List<CustomerOrder> getAllByOrderStatus(OrderStatus status) {
+        return customerOrderRepository.findAllByOrderStatus(status);
+    }
+
+    /**
      * Create an customerOrderRepository instance
      */
     @Transactional
