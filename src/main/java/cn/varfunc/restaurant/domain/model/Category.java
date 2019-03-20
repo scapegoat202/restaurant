@@ -1,6 +1,6 @@
 package cn.varfunc.restaurant.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -25,7 +25,7 @@ public class Category {
     /**
      * Collection of its Commodities.
      */
-    @JsonIgnoreProperties({"categories"})
+    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "category_commodity",
@@ -36,8 +36,8 @@ public class Category {
     /**
      * the Store it belongs to.
      */
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    @JsonIgnoreProperties({"categories"})
     private Store store;
 }

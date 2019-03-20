@@ -6,7 +6,6 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -52,7 +51,7 @@ public class CustomerOrder {
      * the Customer this order belongs to.
      */
     @ManyToOne(optional = false)
-    @JoinColumn(nullable = false, updatable = false)
+    @JoinColumn(name = "customerId", nullable = false, updatable = false)
     private Customer customer;
 
     /**

@@ -37,7 +37,7 @@ public class Commodity {
     /**
      * the Category this commodity belongs to.
      */
-    @JsonIgnoreProperties({"commodities"})
+    @JsonIgnoreProperties("commodities")
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "category_commodity",
@@ -45,9 +45,6 @@ public class Commodity {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<>();
 
-//    /**
-//     * Image of this commodity.
-//     */
-//    @Lob
-//    private File image;
+    @Lob
+    private byte[] image;
 }
