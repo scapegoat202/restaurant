@@ -30,7 +30,7 @@ public class CustomerService {
     public Customer findById(long id) {
         log.info("Method: findById(), id: {}", id);
         Optional<Customer> customer = this.customerRepository.findById(id);
-        return customer.orElseThrow(() -> new NoSuchElementException("没有指定的顾客"));
+        return customer.orElseThrow(() -> new NoSuchElementException("No such customer!"));
     }
 
     /**
@@ -53,7 +53,7 @@ public class CustomerService {
     /**
      * Record the time of customerRepository's latest visit
      */
-    public Customer updateLastAccessTime(Customer customer) {
+    Customer updateLastAccessTime(Customer customer) {
         return this.customerRepository.save(customer.setLastAccessDate(LocalDateTime.now()));
     }
 
