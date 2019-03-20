@@ -15,19 +15,19 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class CategoryService {
-    private final CategoryRepository category;
+    private final CategoryRepository categoryRepository;
     private final StoreService storeService;
 
     @Autowired
-    public CategoryService(CategoryRepository category, StoreService store) {
-        this.category = category;
+    public CategoryService(CategoryRepository categoryRepository, StoreService store) {
+        this.categoryRepository = categoryRepository;
         this.storeService = store;
     }
 
     /**
-     * Add a new category.
+     * Add a new categoryRepository.
      *
-     * @param form information needed for describing a new category, <code>name</code>
+     * @param form information needed for describing a new categoryRepository, <code>name</code>
      *             and <code>storeId</code> are required
      */
     public Category addCategory(CategoryForm form) {
@@ -36,33 +36,33 @@ public class CategoryService {
         Store store = this.storeService.findById(form.getStoreId());
         newCategory.setName(form.getName())
                 .setStore(store);
-        return category.save(newCategory);
+        return categoryRepository.save(newCategory);
     }
 
     /**
-     * Get a category instance by given id.
+     * Get a categoryRepository instance by given id.
      */
     public Category findById(long id) {
         log.info("Method: findById(), id: {}", id);
-        Optional<Category> category = this.category.findById(id);
-        return category.orElseThrow(() -> new NoSuchElementException("No such category!"));
+        Optional<Category> category = this.categoryRepository.findById(id);
+        return category.orElseThrow(() -> new NoSuchElementException("No such categoryRepository!"));
     }
 
     /**
-     * Modify specified category's information of given id.
+     * Modify specified categoryRepository's information of given id.
      *
      * @param form <code>name</code> are required, <code>storeId</code> can't be updated.
      */
     public Category modifyInfo(long id, CategoryForm form) {
         log.info("Method: modifyInfo(), form: {}", form);
-        category.findById(id).ifPresent(it -> {
+        categoryRepository.findById(id).ifPresent(it -> {
             if (form.getName() != null && !it.getName().equals(form.getName())) {
                 it.setName(form.getName());
             }
-            category.save(it);
+            categoryRepository.save(it);
         });
-        return category.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No such category!"));
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No such categoryRepository!"));
     }
 
     /**
@@ -70,6 +70,6 @@ public class CategoryService {
      */
     public List<Category> findAllById(Iterable<Long> ids) {
         log.info("Method: findAllById(), ids: {}", ids);
-        return category.findAllById(ids);
+        return categoryRepository.findAllById(ids);
     }
 }

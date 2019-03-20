@@ -17,37 +17,38 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class OrderService {
-    private final CustomerOrderRepository order;
+    private final CustomerOrderRepository customerOrderRepository;
     private final StoreService storeService;
     private final CustomerService customerService;
     private final OrderItemService orderItemService;
 
     @Autowired
-    public OrderService(CustomerOrderRepository order, StoreService storeService,
+    public OrderService(CustomerOrderRepository customerOrderRepository, StoreService storeService,
                         CustomerService customerService, OrderItemService orderItemService) {
-        this.order = order;
+        this.customerOrderRepository = customerOrderRepository;
         this.storeService = storeService;
         this.customerService = customerService;
         this.orderItemService = orderItemService;
     }
 
     /**
-     * Get an order instance by given id
+     * Get an customerOrderRepository instance by given id
      */
     public CustomerOrder getById(long id) {
         log.info("Method: getById(), id: {}", id);
-        Optional<CustomerOrder> orderOptional = order.findById(id);
-        return orderOptional.orElseThrow(() -> new NoSuchElementException("No such order!"));
+        Optional<CustomerOrder> orderOptional = customerOrderRepository.findById(id);
+        return orderOptional.orElseThrow(
+                () -> new NoSuchElementException("No such customerOrderRepository!"));
     }
 
     /**
-     * Create an order instance
+     * Create an customerOrderRepository instance
      */
     @Transactional
     public CustomerOrder create(@RequestBody OrderForm form) {
         log.info("Method: create(), form: {}", form);
 
-        // TODO: 2019/3/6 VALIDATION is required before creating order
+        // TODO: 2019/3/6 VALIDATION is required before creating customer order
 
         Store store = storeService.findById(form.getStoreId());
         Customer customer = customerService
@@ -66,22 +67,22 @@ public class OrderService {
                 .setOrderStatus(OrderStatus.SUBMITTED)
                 .setOrderItems(orderItems)
                 .setTableNumber(form.getTableNumber());
-        return order.save(newCustomerOrder);
+        return customerOrderRepository.save(newCustomerOrder);
     }
 
     /**
-     * Change order status of specific order with given id
+     * Change customerOrderRepository status of specific customerOrderRepository with given id
      *
-     * @param id   id of the order
+     * @param id   id of the customerOrderRepository
      * @param form only <code>orderStatus</code> field is required
      */
     public CustomerOrder modifyStatus(long id, OrderForm form) {
         log.info("Method: modifyStatus(), id: {}, form: {}", id, form);
-        order.findById(id).ifPresent(it -> {
+        customerOrderRepository.findById(id).ifPresent(it -> {
             it.setOrderStatus(OrderStatus.parse(form.getOrderStatus()));
-            order.save(it);
+            customerOrderRepository.save(it);
         });
-        return order.findById(id).orElseThrow(
-                () -> new NoSuchElementException("No such order with id " + id));
+        return customerOrderRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("No such customerOrderRepository with id " + id));
     }
 }

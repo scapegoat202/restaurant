@@ -12,28 +12,28 @@ import java.util.NoSuchElementException;
 @Slf4j
 @Service
 public class CommodityService {
-    private final CommodityRepository commodity;
+    private final CommodityRepository commodityRepository;
     private final CategoryService categoryService;
 
     @Autowired
-    public CommodityService(CommodityRepository commodity, CategoryService categoryService) {
-        this.commodity = commodity;
+    public CommodityService(CommodityRepository commodityRepository, CategoryService categoryService) {
+        this.commodityRepository = commodityRepository;
         this.categoryService = categoryService;
     }
 
     /**
-     * Get a commodity instance by given id.
+     * Get a commodityRepository instance by given id.
      */
     public Commodity getById(long id) {
         log.info("Method: getById(), id: {}", id);
-        return commodity.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No such commodity!"));
+        return commodityRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No such commodityRepository!"));
     }
 
     /**
-     * Add a new commodity instance.
+     * Add a new commodityRepository instance.
      *
-     * @param form Information needed for describing a new commodity, <code>name</code> and
+     * @param form Information needed for describing a new commodityRepository, <code>name</code> and
      *             <code>price</code> fields are required.
      */
     public Commodity add(CommodityForm form) {
@@ -47,17 +47,17 @@ public class CommodityService {
         form.getCategories().stream()
                 .map(categoryService::findById)
                 .forEach(newCommodity.getCategories()::add);
-        return commodity.save(newCommodity);
+        return commodityRepository.save(newCommodity);
     }
 
     /**
-     * Modify specified commodity's information by given id.
+     * Modify specified commodityRepository's information by given id.
      *
      * @param form only fields that have to be updated are needed.
      */
     public Commodity modifyInfo(long id, CommodityForm form) {
         log.info("Method: modifyInfo(), id: {}, form: {}", id, form);
-        commodity.findById(id).ifPresent(it -> {
+        commodityRepository.findById(id).ifPresent(it -> {
             if (form.getName() != null && !form.getName().equals(it.getName())) {
                 it.setName(form.getName());
             }
@@ -76,10 +76,10 @@ public class CommodityService {
                 log.info("category size after: {}", it.getCategories());
             }
             // Save changes to database
-            commodity.save(it);
+            commodityRepository.save(it);
         });
 
-        return commodity.findById(id)
+        return commodityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such Commodity!"));
     }
 }

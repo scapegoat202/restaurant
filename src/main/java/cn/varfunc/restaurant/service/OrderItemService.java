@@ -13,12 +13,13 @@ import java.util.NoSuchElementException;
 @Slf4j
 @Service
 public class OrderItemService {
-    private final OrderItemRepository orderItem;
+    private final OrderItemRepository orderItemRepository;
     private final CommodityService commodityService;
 
     @Autowired
-    public OrderItemService(OrderItemRepository orderItem, CommodityService commodityService) {
-        this.orderItem = orderItem;
+    public OrderItemService(OrderItemRepository orderItemRepository,
+                            CommodityService commodityService) {
+        this.orderItemRepository = orderItemRepository;
         this.commodityService = commodityService;
     }
 
@@ -27,7 +28,8 @@ public class OrderItemService {
      */
     public OrderItem getById(long id) {
         log.info("Method: getById(), id: {}", id);
-        return orderItem.findById(id).orElseThrow(() -> new NoSuchElementException("No such order item!"));
+        return orderItemRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("No such order item!"));
     }
 
     /**
@@ -41,6 +43,6 @@ public class OrderItemService {
         OrderItem newOrderItem = new OrderItem();
         newOrderItem.setCommodity(commodity)
                 .setAmount(form.getAmount());
-        return orderItem.save(newOrderItem);
+        return orderItemRepository.save(newOrderItem);
     }
 }

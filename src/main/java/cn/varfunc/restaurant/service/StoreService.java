@@ -14,28 +14,28 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class StoreService {
-    private final StoreRepository store;
+    private final StoreRepository storeRepository;
 
     @Autowired
-    public StoreService(StoreRepository store) {
-        this.store = store;
+    public StoreService(StoreRepository storeRepository) {
+        this.storeRepository = storeRepository;
     }
 
     /**
-     * Get a store instance by given id.
+     * Get a storeRepository instance by given id.
      */
     public Store findById(long id) throws NoSuchElementException {
         log.info("Method: findById(), id: {}", id);
-        Optional<Store> store = this.store.findById(id);
+        Optional<Store> store = this.storeRepository.findById(id);
         return store.orElseThrow(() -> {
             throw new NoSuchElementException("No such Store!");
         });
     }
 
     /**
-     * Create a new store instance.
+     * Create a new storeRepository instance.
      *
-     * @param form information needed for creating a new store, <code>name</code> field
+     * @param form information needed for creating a new storeRepository, <code>name</code> field
      *             can not be <code>null</code> or blank.
      */
     public Store createStore(StoreForm form) {
@@ -46,19 +46,19 @@ public class StoreService {
                 .setAnnouncement(form.getAnnouncement())
                 .setAddress(form.getAddress())
                 .setWorkingGroup(form.getWorkingGroup());
-        return store.save(newStore);
+        return storeRepository.save(newStore);
     }
 
     /**
-     * Modify specified store's information.
+     * Modify specified storeRepository's information.
      *
-     * @param id   the id of store whose information need to be modified
+     * @param id   the id of storeRepository whose information need to be modified
      * @param form the information to be updated
      */
     public Store modifyInformation(long id, StoreForm form) {
         log.info("Method: modifyInformation(), id: {}, form: {}", id, form);
-        Store pre = store.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No such store!"));
+        Store pre = storeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No such storeRepository!"));
 
         if (form.getName() != null && !form.getName().equals(pre.getName())) {
             pre.setName(form.getName());
@@ -80,7 +80,7 @@ public class StoreService {
             pre.setAddress(form.getAddress());
         }
         // Save changes to database
-        return store.save(pre);
+        return storeRepository.save(pre);
     }
 
     /**
@@ -88,7 +88,7 @@ public class StoreService {
      */
     public List<Store> findAll() {
         log.info("Method: findAll()");
-        return store.findAll();
+        return storeRepository.findAll();
     }
 
     /**
@@ -96,6 +96,6 @@ public class StoreService {
      */
     public long numberOfStores() {
         log.info("Method: numberOfStores()");
-        return store.count();
+        return storeRepository.count();
     }
 }

@@ -17,26 +17,26 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class CustomerService {
-    private final CustomerRepository customer;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    public CustomerService(CustomerRepository customer) {
-        this.customer = customer;
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     /**
-     * Get a customer instance by given id.
+     * Get a customerRepository instance by given id.
      */
     public Customer findById(long id) {
         log.info("Method: findById(), id: {}", id);
-        Optional<Customer> customer = this.customer.findById(id);
+        Optional<Customer> customer = this.customerRepository.findById(id);
         return customer.orElseThrow(() -> new NoSuchElementException("没有指定的顾客"));
     }
 
     /**
-     * Add a new customer.
+     * Add a new customerRepository.
      *
-     * @param form information needed for describing a new customer, the <code>name</code> and
+     * @param form information needed for describing a new customerRepository, the <code>name</code> and
      *             <code>gender</code> fields are required.
      */
     public Customer addCustomer(CustomerForm form) {
@@ -47,18 +47,18 @@ public class CustomerService {
                 .setEmail(form.getEmail())
                 .setRegisterDate(LocalDate.now())
                 .setLastAccessDate(LocalDateTime.now());
-        return customer.save(newCustomer);
+        return customerRepository.save(newCustomer);
     }
 
     /**
-     * Record the time of customer's latest visit
+     * Record the time of customerRepository's latest visit
      */
     public Customer updateLastAccessTime(Customer customer) {
-        return this.customer.save(customer.setLastAccessDate(LocalDateTime.now()));
+        return this.customerRepository.save(customer.setLastAccessDate(LocalDateTime.now()));
     }
 
     /**
-     * Modify customer information by given id.
+     * Modify customerRepository information by given id.
      */
     public Customer modifyInformation(long id, CustomerForm form) {
         Customer customer = findById(id);
@@ -84,7 +84,7 @@ public class CustomerService {
         }
 
         if (isModified) {
-            customer = this.customer.save(customer);
+            customer = this.customerRepository.save(customer);
         }
         return customer;
     }
