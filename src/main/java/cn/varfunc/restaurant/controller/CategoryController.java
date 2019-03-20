@@ -2,6 +2,7 @@ package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.CategoryForm;
 import cn.varfunc.restaurant.domain.model.Category;
+import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +23,23 @@ public class CategoryController {
      * Get category's information by given id, encode the <code>ID</code> in the url
      */
     @GetMapping("/{id}")
-    public Category getCategory(@PathVariable long id) {
-        return categoryService.findById(id);
+    public ApiResponse getCategory(@PathVariable long id) {
+        Category category = categoryService.findById(id);
+        return ApiResponse.builder()
+                .data(category)
+                .build();
     }
-
-//    /**
-//     * Get all categories of current store.
-//     */
-//    public List<Category> getAllCategories(@RequestParam long storeId) {
-//        return categoryService.findAll(storeId);
-//    }
 
     /**
      * Create a new category
      * Required fields: <code>name</code>, <code>storeId</code>
      */
     @PostMapping
-    public Category createCategory(@RequestBody CategoryForm form) {
-        return categoryService.addCategory(form);
+    public ApiResponse createCategory(@RequestBody CategoryForm form) {
+        Category category = categoryService.addCategory(form);
+        return ApiResponse.builder()
+                .data(category)
+                .build();
     }
 
     /**
@@ -47,7 +47,10 @@ public class CategoryController {
      * Only the modified field are needed
      */
     @PatchMapping("/{id}")
-    public Category modifyCategoryInfo(@PathVariable long id, @RequestBody CategoryForm form) {
-        return categoryService.modifyInfo(id, form);
+    public ApiResponse modifyCategoryInfo(@PathVariable long id, @RequestBody CategoryForm form) {
+        Category category = categoryService.modifyInfo(id, form);
+        return ApiResponse.builder()
+                .data(category)
+                .build();
     }
 }

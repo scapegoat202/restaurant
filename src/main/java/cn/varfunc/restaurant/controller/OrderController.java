@@ -2,6 +2,7 @@ package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.OrderForm;
 import cn.varfunc.restaurant.domain.model.CustomerOrder;
+import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +30,23 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<CustomerOrder> getAllOrdersByStoreId(
+    public ApiResponse getAllOrdersByStoreId(
             @RequestParam(name = "storeId") long storeId) {
-        return orderService.getAllByStoreId(storeId);
+        List<CustomerOrder> orders = orderService.getAllByStoreId(storeId);
+        return ApiResponse.builder()
+                .data(orders)
+                .build();
     }
 
     /**
      * Create an order instance
      */
     @PostMapping
-    public CustomerOrder createOrder(@RequestBody OrderForm form) {
-        return orderService.create(form);
+    public ApiResponse createOrder(@RequestBody OrderForm form) {
+        CustomerOrder order = orderService.create(form);
+        return ApiResponse.builder()
+                .data(order)
+                .build();
     }
 
     /**
@@ -49,7 +56,10 @@ public class OrderController {
      * @param form only <code>orderStatus</code> field is required
      */
     @PatchMapping("/{id}")
-    public CustomerOrder changeStatus(@PathVariable long id, @RequestBody OrderForm form) {
-        return orderService.modifyStatus(id, form);
+    public ApiResponse changeStatus(@PathVariable long id, @RequestBody OrderForm form) {
+        CustomerOrder order = orderService.modifyStatus(id, form);
+        return ApiResponse.builder()
+                .data(order)
+                .build();
     }
 }
