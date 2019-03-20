@@ -39,6 +39,10 @@ public class OrderService {
                 () -> new NoSuchElementException("No such customerOrderRepository!"));
     }
 
+    public List<CustomerOrder> getAllByStoreId(long storeId) {
+        return customerOrderRepository.findByStoreId(storeId);
+    }
+
     /**
      * Create an customerOrderRepository instance
      */
