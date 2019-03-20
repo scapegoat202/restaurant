@@ -36,7 +36,7 @@ public class OrderService {
         log.info("Method: getById(), id: {}", id);
         Optional<CustomerOrder> orderOptional = customerOrderRepository.findById(id);
         return orderOptional.orElseThrow(
-                () -> new NoSuchElementException("No such customerOrderRepository!"));
+                () -> new NoSuchElementException("No such customer order!"));
     }
 
     public List<CustomerOrder> getAllByStoreId(long storeId) {
