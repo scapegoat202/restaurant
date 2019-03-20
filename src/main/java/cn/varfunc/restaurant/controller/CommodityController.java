@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@RequestMapping("/commodities")
 public class CommodityController {
     private final CommodityService commodityService;
 
@@ -20,7 +21,7 @@ public class CommodityController {
     /**
      * Get commodity's information by given id, encode the <code>id</code> in the url
      */
-    @GetMapping("/commodity/{id}")
+    @GetMapping("/{id}")
     public Commodity getCommodityById(@PathVariable long id) {
         return commodityService.getById(id);
     }
@@ -29,7 +30,7 @@ public class CommodityController {
      * Add a commodity<br>
      * Required fields: <code>name</code>, <code>price</code>
      */
-    @PostMapping("/commodity")
+    @PostMapping
     public Commodity addCommodity(@RequestBody CommodityForm form) {
         log.info("{}", form);
         return commodityService.add(form);
@@ -39,7 +40,7 @@ public class CommodityController {
      * Modify specified commodity's information by given id, encode the <code>id</code> in the url<br>
      * Only modified fields are needed.
      */
-    @PatchMapping("/commodity/{id}")
+    @PatchMapping("/{id}")
     public Commodity modifyCommodityInfo(@PathVariable long id, @RequestBody CommodityForm form) {
         return commodityService.modifyInfo(id, form);
     }

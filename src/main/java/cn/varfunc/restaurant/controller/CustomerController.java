@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@RequestMapping("/customer")
 public class CustomerController {
     private final CustomerService customerService;
 
@@ -20,7 +21,7 @@ public class CustomerController {
     /**
      * Get customer's information by given id, encode the <code>id</code> in the url
      */
-    @GetMapping("/customer/{id}")
+    @GetMapping("/{id}")
     public Customer getCustomer(@PathVariable long id) {
         return customerService.findById(id);
     }
@@ -29,7 +30,7 @@ public class CustomerController {
      * Add a new customer's information<br>
      * required field: <code>name</code>, <code>gender</code>
      */
-    @PostMapping("/customer")
+    @PostMapping
     public Customer newCustomer(@RequestBody CustomerForm form) {
         return customerService.addCustomer(form);
     }

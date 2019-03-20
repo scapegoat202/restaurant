@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
 
@@ -20,7 +21,7 @@ public class OrderController {
     /**
      * Get an order instance by given id.
      */
-    @GetMapping("/order/{id}")
+    @GetMapping("/{id}")
     public CustomerOrder getOrderById(@PathVariable long id) {
         return orderService.getById(id);
     }
@@ -28,7 +29,7 @@ public class OrderController {
     /**
      * Create an order instance
      */
-    @PostMapping("/order")
+    @PostMapping
     public CustomerOrder createOrder(@RequestBody OrderForm form) {
         return orderService.create(form);
     }
@@ -39,7 +40,7 @@ public class OrderController {
      * @param id   id of the order
      * @param form only <code>orderStatus</code> field is required
      */
-    @PatchMapping("/order/{id}")
+    @PatchMapping("/{id}")
     public CustomerOrder changeStatus(@PathVariable long id, @RequestBody OrderForm form) {
         return orderService.modifyStatus(id, form);
     }

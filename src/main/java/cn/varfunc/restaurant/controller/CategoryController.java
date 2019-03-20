@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -20,16 +21,23 @@ public class CategoryController {
     /**
      * Get category's information by given id, encode the <code>ID</code> in the url
      */
-    @GetMapping("/category/{id}")
+    @GetMapping("/{id}")
     public Category getCategory(@PathVariable long id) {
         return categoryService.findById(id);
     }
+
+//    /**
+//     * Get all categories of current store.
+//     */
+//    public List<Category> getAllCategories(@RequestParam long storeId) {
+//        return categoryService.findAll(storeId);
+//    }
 
     /**
      * Create a new category
      * Required fields: <code>name</code>, <code>storeId</code>
      */
-    @PostMapping("/category")
+    @PostMapping
     public Category createCategory(@RequestBody CategoryForm form) {
         return categoryService.addCategory(form);
     }
@@ -38,7 +46,7 @@ public class CategoryController {
      * Modify specified category information by given id, encode the <code>id</code> in the url<br>
      * Only the modified field are needed
      */
-    @PatchMapping("/category/{id}")
+    @PatchMapping("/{id}")
     public Category modifyCategoryInfo(@PathVariable long id, @RequestBody CategoryForm form) {
         return categoryService.modifyInfo(id, form);
     }

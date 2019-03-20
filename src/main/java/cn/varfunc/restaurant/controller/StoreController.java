@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@RequestMapping("/stores")
 public class StoreController {
     private final StoreService storeService;
 
@@ -21,7 +22,7 @@ public class StoreController {
     /**
      * Get a store's information by given id, encode the <code>id</code> in the <code>url</code>
      */
-    @GetMapping("/store/{id}")
+    @GetMapping("/{id}")
     public Store getStore(@PathVariable long id) {
         return storeService.findById(id);
     }
@@ -30,7 +31,7 @@ public class StoreController {
      * Create a new Store<br>
      * Required field: <code>name</code>
      */
-    @PostMapping("/store")
+    @PostMapping
     public Store createStore(@RequestBody StoreForm store) {
         return storeService.createStore(store);
     }
@@ -38,7 +39,7 @@ public class StoreController {
     /**
      * Modify specified store's information by given id, only modified fields are needed
      */
-    @PatchMapping("/store/{id}")
+    @PatchMapping("/{id}")
     public Store modifyStoreInfo(@RequestBody @Validated StoreForm form, @PathVariable long id) {
         return storeService.modifyInformation(id, form);
     }
