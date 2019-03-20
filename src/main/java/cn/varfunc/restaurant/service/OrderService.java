@@ -32,22 +32,21 @@ public class OrderService {
     /**
      * Get an customerOrderRepository instance by given id
      */
-    public CustomerOrder getById(long id) {
-        log.info("Method: getById(), id: {}", id);
+    public CustomerOrder findById(long id) {
+        log.info("Method: findById(), id: {}", id);
         Optional<CustomerOrder> orderOptional = customerOrderRepository.findById(id);
         return orderOptional.orElseThrow(
                 () -> new NoSuchElementException("No such customer order!"));
     }
 
-    public List<CustomerOrder> findAllByStoreId(long storeId) {
-        Store store = storeService.findById(storeId);
+    public List<CustomerOrder> findAllByStore(Store store) {
         return customerOrderRepository.findAllByStore(store);
     }
 
     /**
      * Get all orders of specified order status
      */
-    public List<CustomerOrder> getAllByOrderStatus(OrderStatus status) {
+    public List<CustomerOrder> findAllByOrderStatus(OrderStatus status) {
         return customerOrderRepository.findAllByOrderStatus(status);
     }
 

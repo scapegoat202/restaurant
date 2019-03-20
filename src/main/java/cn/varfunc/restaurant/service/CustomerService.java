@@ -44,8 +44,8 @@ public class CustomerService {
      * @param form information needed for describing a new customerRepository, the <code>name</code> and
      *             <code>gender</code> fields are required.
      */
-    public Customer addCustomer(CustomerForm form) {
-        log.info("Method: addCustomer(), form: {}", form);
+    public Customer create(CustomerForm form) {
+        log.info("Method: create(), form: {}", form);
         Customer newCustomer = new Customer();
         newCustomer.setName(form.getName())
                 .setGender(Gender.parse(form.getGender()))

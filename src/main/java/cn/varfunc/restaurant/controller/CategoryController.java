@@ -36,7 +36,7 @@ public class CategoryController {
      */
     @PostMapping
     public ApiResponse createCategory(@RequestBody CategoryForm form) {
-        Category category = categoryService.addCategory(form);
+        Category category = categoryService.create(form);
         return ApiResponse.builder()
                 .data(category)
                 .build();
@@ -48,7 +48,7 @@ public class CategoryController {
      */
     @PatchMapping("/{id}")
     public ApiResponse modifyCategoryInfo(@PathVariable long id, @RequestBody CategoryForm form) {
-        Category category = categoryService.modifyInfo(id, form);
+        Category category = categoryService.modifyInformation(id, form);
         return ApiResponse.builder()
                 .data(category)
                 .build();

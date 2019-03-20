@@ -26,8 +26,8 @@ public class OrderItemService {
     /**
      * Get an order item instance by given id
      */
-    public OrderItem getById(long id) {
-        log.info("Method: getById(), id: {}", id);
+    public OrderItem findById(long id) {
+        log.info("Method: findById(), id: {}", id);
         return orderItemRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("No such order item!"));
     }
@@ -39,7 +39,7 @@ public class OrderItemService {
      */
     public OrderItem create(OrderItemForm form) {
         log.info("Method: create(), form: {}", form);
-        Commodity commodity = commodityService.getById(form.getCommodityId());
+        Commodity commodity = commodityService.findById(form.getCommodityId());
         OrderItem newOrderItem = new OrderItem();
         newOrderItem.setCommodity(commodity)
                 .setAmount(form.getAmount());

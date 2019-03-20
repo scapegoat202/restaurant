@@ -3,8 +3,10 @@ package cn.varfunc.restaurant.controller;
 import cn.varfunc.restaurant.domain.form.OrderForm;
 import cn.varfunc.restaurant.domain.model.CustomerOrder;
 import cn.varfunc.restaurant.domain.model.OrderStatus;
+import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.OrderService;
+import cn.varfunc.restaurant.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +18,12 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
+    private final StoreService storeService;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, StoreService storeService) {
         this.orderService = orderService;
+        this.storeService = storeService;
     }
 
     /**
@@ -27,7 +31,7 @@ public class OrderController {
      */
     @GetMapping("/{id}")
     public CustomerOrder getOrderById(@PathVariable long id) {
-        return orderService.getById(id);
+        return orderService.findById(id);
     }
 
     /**
@@ -36,7 +40,8 @@ public class OrderController {
     @GetMapping
     public ApiResponse getAllOrdersByStoreId(
             @RequestParam(name = "storeId") long storeId) {
-        List<CustomerOrder> orders = orderService.findAllByStoreId(storeId);
+        Store store = storeService.findById(storeId);
+        List<CustomerOrder> orders = orderService.findAllByStore(store);
         return ApiResponse.builder()
                 .data(orders)
                 .build();
@@ -47,7 +52,7 @@ public class OrderController {
      */
     @GetMapping("/pending")
     public ApiResponse getAllPendingOrders() {
-        List<CustomerOrder> orders = orderService.getAllByOrderStatus(OrderStatus.SUBMITTED);
+        List<CustomerOrder> orders = orderService.findAllByOrderStatus(OrderStatus.SUBMITTED);
         return ApiResponse.builder()
                 .data(orders)
                 .build();

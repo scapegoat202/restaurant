@@ -51,7 +51,7 @@ public class CustomerController {
      */
     @PostMapping
     public ApiResponse newCustomer(@RequestBody CustomerForm form) {
-        Customer customer = customerService.addCustomer(form);
+        Customer customer = customerService.create(form);
         return ApiResponse.builder()
                 .data(customer)
                 .build();

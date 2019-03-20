@@ -24,7 +24,7 @@ public class CommodityController {
      */
     @GetMapping("/{id}")
     public ApiResponse getCommodityById(@PathVariable long id) {
-        Commodity commodity = commodityService.getById(id);
+        Commodity commodity = commodityService.findById(id);
         return ApiResponse.builder()
                 .data(commodity)
                 .build();
@@ -36,7 +36,7 @@ public class CommodityController {
      */
     @PostMapping
     public ApiResponse addCommodity(@RequestBody CommodityForm form) {
-        Commodity commodity = commodityService.add(form);
+        Commodity commodity = commodityService.create(form);
         return ApiResponse.builder()
                 .data(commodity)
                 .build();
@@ -48,7 +48,7 @@ public class CommodityController {
      */
     @PatchMapping("/{id}")
     public ApiResponse modifyCommodityInfo(@PathVariable long id, @RequestBody CommodityForm form) {
-        Commodity commodity = commodityService.modifyInfo(id, form);
+        Commodity commodity = commodityService.modifyInformation(id, form);
         return ApiResponse.builder()
                 .data(commodity)
                 .build();

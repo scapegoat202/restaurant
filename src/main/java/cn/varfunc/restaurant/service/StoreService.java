@@ -38,8 +38,8 @@ public class StoreService {
      * @param form information needed for creating a new storeRepository, <code>name</code> field
      *             can not be <code>null</code> or blank.
      */
-    public Store createStore(StoreForm form) {
-        log.info("Method: createStore(), form: {}", form);
+    public Store create(StoreForm form) {
+        log.info("Method: create(), form: {}", form);
         Store newStore = new Store();
         newStore.setName(form.getName())
                 .setPhoneNumber(form.getPhoneNumber())

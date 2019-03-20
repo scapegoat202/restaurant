@@ -25,7 +25,7 @@ public class CommodityService {
     /**
      * Get a commodityRepository instance by given id.
      */
-    public Commodity getById(long id) {
+    public Commodity findById(long id) {
         return commodityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such commodityRepository!"));
     }
@@ -36,8 +36,8 @@ public class CommodityService {
      * @param form Information needed for describing a new commodityRepository, <code>name</code> and
      *             <code>price</code> fields are required.
      */
-    public Commodity add(CommodityForm form) {
-        log.info("Method: add(), form: {}", form);
+    public Commodity create(CommodityForm form) {
+        log.info("Method: create(), form: {}", form);
         // TODO: 2019/3/7 Validation is required before creating commodity
 
         Commodity newCommodity = new Commodity();
@@ -55,7 +55,7 @@ public class CommodityService {
      *
      * @param form only fields that have to be updated are needed.
      */
-    public Commodity modifyInfo(long id, CommodityForm form) {
+    public Commodity modifyInformation(long id, CommodityForm form) {
         commodityRepository.findById(id).ifPresent(it -> {
             if (Objects.nonNull(form.getName()) &&
                     !Objects.equals(form.getName(), it.getName())) {
@@ -75,7 +75,7 @@ public class CommodityService {
             if (Objects.nonNull(form.getCategories()) &&
                     form.getCategories().size() != 0) {
                 log.info("category size pre: {}", it.getCategories().size());
-                it.setCategories(categoryService.findAllById(form.getCategories()));
+                it.setCategories(categoryService.findAllByIds(form.getCategories()));
                 log.info("category size after: {}", it.getCategories());
             }
             // Save changes to database

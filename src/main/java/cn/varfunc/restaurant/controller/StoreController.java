@@ -37,7 +37,7 @@ public class StoreController {
      */
     @PostMapping
     public ApiResponse createStore(@RequestBody StoreForm form) {
-        Store store = storeService.createStore(form);
+        Store store = storeService.create(form);
         return ApiResponse.builder()
                 .data(store)
                 .build();

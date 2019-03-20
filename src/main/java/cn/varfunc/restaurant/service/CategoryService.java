@@ -30,8 +30,8 @@ public class CategoryService {
      * @param form information needed for describing a new categoryRepository, <code>name</code>
      *             and <code>storeId</code> are required
      */
-    public Category addCategory(CategoryForm form) {
-        log.info("Method: addCategory(), form: {}", form);
+    public Category create(CategoryForm form) {
+        log.info("Method: create(), form: {}", form);
         Category newCategory = new Category();
         Store store = this.storeService.findById(form.getStoreId());
         newCategory.setName(form.getName())
@@ -53,8 +53,8 @@ public class CategoryService {
      *
      * @param form <code>name</code> are required, <code>storeId</code> can't be updated.
      */
-    public Category modifyInfo(long id, CategoryForm form) {
-        log.info("Method: modifyInfo(), form: {}", form);
+    public Category modifyInformation(long id, CategoryForm form) {
+        log.info("Method: modifyInformation(), form: {}", form);
         categoryRepository.findById(id).ifPresent(it -> {
             if (form.getName() != null && !it.getName().equals(form.getName())) {
                 it.setName(form.getName());
@@ -68,8 +68,8 @@ public class CategoryService {
     /**
      * Get all categories of given collection of ids.
      */
-    public List<Category> findAllById(Iterable<Long> ids) {
-        log.info("Method: findAllById(), ids: {}", ids);
+    List<Category> findAllByIds(Iterable<Long> ids) {
+        log.info("Method: findAllByIds(), ids: {}", ids);
         return categoryRepository.findAllById(ids);
     }
 }
