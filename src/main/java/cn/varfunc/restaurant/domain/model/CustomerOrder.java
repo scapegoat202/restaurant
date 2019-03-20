@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,4 +60,14 @@ public class CustomerOrder {
      */
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
+    /**
+     * The time when the order was created
+     */
+    private LocalDateTime timeCreated;
+
+    /**
+     * The time when the order was finished`
+     */
+    private LocalDateTime timeFinished;
 }
