@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -40,7 +42,17 @@ public class CustomerService {
         log.info("Method: addCustomer(), form: {}", form);
         Customer newCustomer = new Customer();
         newCustomer.setName(form.getName())
-                .setGender(Gender.parse(form.getGender()));
+                .setGender(Gender.parse(form.getGender()))
+                .setEmail(form.getEmail())
+                .setRegisterDate(LocalDate.now())
+                .setLastAccessDate(LocalDateTime.now());
         return customer.save(newCustomer);
+    }
+
+    /**
+     * Record the time of customer's latest visit
+     */
+    public Customer updateLastAccessTime(Customer customer) {
+        return this.customer.save(customer.setLastAccessDate(LocalDateTime.now()));
     }
 }

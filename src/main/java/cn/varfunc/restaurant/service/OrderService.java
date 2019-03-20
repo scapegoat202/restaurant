@@ -50,7 +50,10 @@ public class OrderService {
         // TODO: 2019/3/6 VALIDATION is required before creating order
 
         Store store = storeService.findById(form.getStoreId());
-        Customer customer = customerService.findById(form.getCustomerId());
+        Customer customer = customerService
+                .updateLastAccessTime(customerService
+                        .findById(form.getCustomerId())
+                );
         List<OrderItem> orderItems = new LinkedList<>();
         form.getOrderItems().stream()
                 .map(orderItemService::create)
