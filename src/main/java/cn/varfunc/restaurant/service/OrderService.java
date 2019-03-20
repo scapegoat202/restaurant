@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -66,7 +64,8 @@ public class OrderService {
                 .setStore(store)
                 .setOrderStatus(OrderStatus.SUBMITTED)
                 .setOrderItems(orderItems)
-                .setTableNumber(form.getTableNumber());
+                .setTableNumber(form.getTableNumber())
+                .setTimeCreated(LocalDateTime.now());
         return customerOrderRepository.save(newCustomerOrder);
     }
 
@@ -79,8 +78,11 @@ public class OrderService {
     public CustomerOrder modifyStatus(long id, OrderForm form) {
         log.info("Method: modifyStatus(), id: {}, form: {}", id, form);
         customerOrderRepository.findById(id).ifPresent(it -> {
-            it.setOrderStatus(OrderStatus.parse(form.getOrderStatus()));
-            customerOrderRepository.save(it);
+            if (Objects.nonNull(form.getOrderStatus())) {
+                it.setOrderStatus(OrderStatus.parse(form.getOrderStatus()))
+                        .setTimeFinished(LocalDateTime.now());
+                customerOrderRepository.save(it);
+            }
         });
         return customerOrderRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("No such customerOrderRepository with id " + id));
