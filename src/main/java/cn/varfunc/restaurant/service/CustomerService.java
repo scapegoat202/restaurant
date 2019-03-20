@@ -2,7 +2,9 @@ package cn.varfunc.restaurant.service;
 
 import cn.varfunc.restaurant.domain.form.CustomerForm;
 import cn.varfunc.restaurant.domain.model.Customer;
+import cn.varfunc.restaurant.domain.model.CustomerOrder;
 import cn.varfunc.restaurant.domain.model.Gender;
+import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,18 +12,21 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
+    private final OrderService orderService;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository,
+                           OrderService orderService) {
         this.customerRepository = customerRepository;
+        this.orderService = orderService;
     }
 
     /**
@@ -48,6 +53,19 @@ public class CustomerService {
                 .setRegisterDate(LocalDate.now())
                 .setLastAccessDate(LocalDateTime.now());
         return customerRepository.save(newCustomer);
+    }
+
+    /**
+     * Get all by store.
+     */
+    public List<Customer> findAllByStore(Store store) {
+        List<CustomerOrder> orders = orderService.findAllByStore(store);
+        List<Customer> customers = new LinkedList<>();
+        orders.stream()
+                .map(CustomerOrder::getCustomer)
+                .collect(Collectors.toMap(Customer::getId, Function.identity(), (a, b) -> a))
+                .forEach((k, v) -> customers.add(v));
+        return customers;
     }
 
     /**
