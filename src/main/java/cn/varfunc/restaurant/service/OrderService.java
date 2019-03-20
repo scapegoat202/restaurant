@@ -39,7 +39,7 @@ public class OrderService {
                 () -> new NoSuchElementException("No such customer order!"));
     }
 
-    public List<CustomerOrder> getAllByStoreId(long storeId) {
+    public List<CustomerOrder> findAllByStoreId(long storeId) {
         Store store = storeService.findById(storeId);
         return customerOrderRepository.findAllByStore(store);
     }

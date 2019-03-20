@@ -36,7 +36,7 @@ public class OrderController {
     @GetMapping
     public ApiResponse getAllOrdersByStoreId(
             @RequestParam(name = "storeId") long storeId) {
-        List<CustomerOrder> orders = orderService.getAllByStoreId(storeId);
+        List<CustomerOrder> orders = orderService.findAllByStoreId(storeId);
         return ApiResponse.builder()
                 .data(orders)
                 .build();
