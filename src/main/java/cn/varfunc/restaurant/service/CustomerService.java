@@ -5,8 +5,8 @@ import cn.varfunc.restaurant.domain.model.Customer;
 import cn.varfunc.restaurant.domain.model.CustomerOrder;
 import cn.varfunc.restaurant.domain.model.Gender;
 import cn.varfunc.restaurant.domain.model.Store;
+import cn.varfunc.restaurant.domain.repository.CustomerOrderRepository;
 import cn.varfunc.restaurant.domain.repository.CustomerRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +16,22 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
-    private final OrderService orderService;
+    private final CustomerOrderRepository customerOrderRepository;
 
     @Autowired
     public CustomerService(CustomerRepository customerRepository,
-                           OrderService orderService) {
+                           CustomerOrderRepository customerOrderRepository) {
         this.customerRepository = customerRepository;
-        this.orderService = orderService;
+        this.customerOrderRepository = customerOrderRepository;
     }
 
     /**
      * Get a customerRepository instance by given id.
      */
     public Customer findById(long id) {
-        log.info("Method: findById(), id: {}", id);
         Optional<Customer> customer = this.customerRepository.findById(id);
         return customer.orElseThrow(() -> new NoSuchElementException("No such customer!"));
     }
@@ -45,7 +43,6 @@ public class CustomerService {
      *             <code>gender</code> fields are required.
      */
     public Customer create(CustomerForm form) {
-        log.info("Method: create(), form: {}", form);
         Customer newCustomer = new Customer();
         newCustomer.setName(form.getName())
                 .setGender(Gender.parse(form.getGender()))
@@ -59,20 +56,14 @@ public class CustomerService {
      * Get all by store.
      */
     public List<Customer> findAllByStore(Store store) {
-        List<CustomerOrder> orders = orderService.findAllByStore(store);
+        // TODO: 2019/3/20 Require feasibility validation
+        List<CustomerOrder> orders = customerOrderRepository.findAllByStore(store);
         List<Customer> customers = new LinkedList<>();
         orders.stream()
                 .map(CustomerOrder::getCustomer)
                 .collect(Collectors.toMap(Customer::getId, Function.identity(), (a, b) -> a))
                 .forEach((k, v) -> customers.add(v));
         return customers;
-    }
-
-    /**
-     * Record the time of customerRepository's latest visit
-     */
-    Customer updateLastAccessTime(Customer customer) {
-        return this.customerRepository.save(customer.setLastAccessDate(LocalDateTime.now()));
     }
 
     /**

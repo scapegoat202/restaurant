@@ -3,15 +3,12 @@ package cn.varfunc.restaurant.service;
 import cn.varfunc.restaurant.domain.form.StoreForm;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.StoreRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class StoreService {
     private final StoreRepository storeRepository;
@@ -25,7 +22,6 @@ public class StoreService {
      * Get a storeRepository instance by given id.
      */
     public Store findById(long id) throws NoSuchElementException {
-        log.info("Method: findById(), id: {}", id);
         Optional<Store> store = this.storeRepository.findById(id);
         return store.orElseThrow(() -> {
             throw new NoSuchElementException("No such Store!");
@@ -39,7 +35,6 @@ public class StoreService {
      *             can not be <code>null</code> or blank.
      */
     public Store create(StoreForm form) {
-        log.info("Method: create(), form: {}", form);
         Store newStore = new Store();
         newStore.setName(form.getName())
                 .setPhoneNumber(form.getPhoneNumber())
@@ -56,7 +51,6 @@ public class StoreService {
      * @param form the information to be updated
      */
     public Store modifyInformation(long id, StoreForm form) {
-        log.info("Method: modifyInformation(), id: {}, form: {}", id, form);
         Store pre = storeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such storeRepository!"));
 
@@ -83,19 +77,4 @@ public class StoreService {
         return storeRepository.save(pre);
     }
 
-    /**
-     * Return all instances of Store.
-     */
-    public List<Store> findAll() {
-        log.info("Method: findAll()");
-        return storeRepository.findAll();
-    }
-
-    /**
-     * Return the number of stores.
-     */
-    public long numberOfStores() {
-        log.info("Method: numberOfStores()");
-        return storeRepository.count();
-    }
 }

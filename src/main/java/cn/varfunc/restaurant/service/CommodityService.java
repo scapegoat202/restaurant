@@ -2,24 +2,24 @@ package cn.varfunc.restaurant.service;
 
 import cn.varfunc.restaurant.domain.form.CommodityForm;
 import cn.varfunc.restaurant.domain.model.Commodity;
+import cn.varfunc.restaurant.domain.repository.CategoryRepository;
 import cn.varfunc.restaurant.domain.repository.CommodityRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-@Slf4j
 @Service
 public class CommodityService {
     private final CommodityRepository commodityRepository;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CommodityService(CommodityRepository commodityRepository, CategoryService categoryService) {
+    public CommodityService(CommodityRepository commodityRepository,
+                            CategoryRepository categoryRepository) {
         this.commodityRepository = commodityRepository;
-        this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -37,7 +37,6 @@ public class CommodityService {
      *             <code>price</code> fields are required.
      */
     public Commodity create(CommodityForm form) {
-        log.info("Method: create(), form: {}", form);
         // TODO: 2019/3/7 Validation is required before creating commodity
 
         Commodity newCommodity = new Commodity();
@@ -45,7 +44,9 @@ public class CommodityService {
                 .setPrice(form.getPrice())
                 .setInventory(form.getInventory());
         form.getCategories().stream()
-                .map(categoryService::findById)
+                .map(id -> categoryRepository.findById(id)
+                        .orElseThrow(() -> new NoSuchElementException(
+                                "No such category! Please check your id.")))
                 .forEach(newCommodity.getCategories()::add);
         return commodityRepository.save(newCommodity);
     }
@@ -74,9 +75,7 @@ public class CommodityService {
 
             if (Objects.nonNull(form.getCategories()) &&
                     form.getCategories().size() != 0) {
-                log.info("category size pre: {}", it.getCategories().size());
-                it.setCategories(categoryService.findAllByIds(form.getCategories()));
-                log.info("category size after: {}", it.getCategories());
+                it.setCategories(categoryRepository.findAllById(form.getCategories()));
             }
             // Save changes to database
             commodityRepository.save(it);

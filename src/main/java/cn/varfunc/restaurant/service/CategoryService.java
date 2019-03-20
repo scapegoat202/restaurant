@@ -4,24 +4,23 @@ import cn.varfunc.restaurant.domain.form.CategoryForm;
 import cn.varfunc.restaurant.domain.model.Category;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.CategoryRepository;
-import lombok.extern.slf4j.Slf4j;
+import cn.varfunc.restaurant.domain.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final StoreService storeService;
+    private final StoreRepository storeRepository;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, StoreService store) {
+    public CategoryService(CategoryRepository categoryRepository,
+                           StoreRepository storeRepository) {
         this.categoryRepository = categoryRepository;
-        this.storeService = store;
+        this.storeRepository = storeRepository;
     }
 
     /**
@@ -31,11 +30,11 @@ public class CategoryService {
      *             and <code>storeId</code> are required
      */
     public Category create(CategoryForm form) {
-        log.info("Method: create(), form: {}", form);
         Category newCategory = new Category();
-        Store store = this.storeService.findById(form.getStoreId());
+        Optional<Store> op = storeRepository.findById(form.getStoreId());
         newCategory.setName(form.getName())
-                .setStore(store);
+                .setStore(op.orElseThrow(
+                        () -> new NoSuchElementException("No such store!")));
         return categoryRepository.save(newCategory);
     }
 
@@ -43,7 +42,6 @@ public class CategoryService {
      * Get a categoryRepository instance by given id.
      */
     public Category findById(long id) {
-        log.info("Method: findById(), id: {}", id);
         Optional<Category> category = this.categoryRepository.findById(id);
         return category.orElseThrow(() -> new NoSuchElementException("No such categoryRepository!"));
     }
@@ -54,7 +52,6 @@ public class CategoryService {
      * @param form <code>name</code> are required, <code>storeId</code> can't be updated.
      */
     public Category modifyInformation(long id, CategoryForm form) {
-        log.info("Method: modifyInformation(), form: {}", form);
         categoryRepository.findById(id).ifPresent(it -> {
             if (form.getName() != null && !it.getName().equals(form.getName())) {
                 it.setName(form.getName());
@@ -63,13 +60,5 @@ public class CategoryService {
         });
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such categoryRepository!"));
-    }
-
-    /**
-     * Get all categories of given collection of ids.
-     */
-    List<Category> findAllByIds(Iterable<Long> ids) {
-        log.info("Method: findAllByIds(), ids: {}", ids);
-        return categoryRepository.findAllById(ids);
     }
 }

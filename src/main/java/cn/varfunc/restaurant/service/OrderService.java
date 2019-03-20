@@ -1,9 +1,9 @@
 package cn.varfunc.restaurant.service;
 
 import cn.varfunc.restaurant.domain.form.OrderForm;
+import cn.varfunc.restaurant.domain.form.OrderItemForm;
 import cn.varfunc.restaurant.domain.model.*;
-import cn.varfunc.restaurant.domain.repository.CustomerOrderRepository;
-import lombok.extern.slf4j.Slf4j;
+import cn.varfunc.restaurant.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,28 +12,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Slf4j
 @Service
 public class OrderService {
     private final CustomerOrderRepository customerOrderRepository;
-    private final StoreService storeService;
-    private final CustomerService customerService;
-    private final OrderItemService orderItemService;
+    private final StoreRepository storeRepository;
+    private final CustomerRepository customerRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final CommodityRepository commodityRepository;
 
     @Autowired
-    public OrderService(CustomerOrderRepository customerOrderRepository, StoreService storeService,
-                        CustomerService customerService, OrderItemService orderItemService) {
+    public OrderService(CustomerOrderRepository customerOrderRepository,
+                        StoreRepository storeRepository,
+                        CustomerRepository customerRepository,
+                        OrderItemRepository orderItemRepository,
+                        CommodityRepository commodityRepository) {
         this.customerOrderRepository = customerOrderRepository;
-        this.storeService = storeService;
-        this.customerService = customerService;
-        this.orderItemService = orderItemService;
+        this.storeRepository = storeRepository;
+        this.customerRepository = customerRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.commodityRepository = commodityRepository;
     }
 
     /**
      * Get an customerOrderRepository instance by given id
      */
     public CustomerOrder findById(long id) {
-        log.info("Method: findById(), id: {}", id);
         Optional<CustomerOrder> orderOptional = customerOrderRepository.findById(id);
         return orderOptional.orElseThrow(
                 () -> new NoSuchElementException("No such customer order!"));
@@ -55,18 +58,17 @@ public class OrderService {
      */
     @Transactional
     public CustomerOrder create(@RequestBody OrderForm form) {
-        log.info("Method: create(), form: {}", form);
-
         // TODO: 2019/3/6 VALIDATION is required before creating customer order
 
-        Store store = storeService.findById(form.getStoreId());
-        Customer customer = customerService
-                .updateLastAccessTime(customerService
-                        .findById(form.getCustomerId())
-                );
+        Store store = storeRepository.findById(form.getStoreId())
+                .orElseThrow(() -> new NoSuchElementException("No such store! Please check the store Id."));
+        Customer customer = customerRepository.findById(form.getCustomerId())
+                .orElseThrow(() -> new NoSuchElementException("No such customer!"));
+        // Update last access time
+        customer = updateLastAccessTime(customer);
         List<OrderItem> orderItems = new LinkedList<>();
         form.getOrderItems().stream()
-                .map(orderItemService::create)
+                .map(this::createOrderItem)
                 .forEach(orderItems::add);
 
         CustomerOrder newCustomerOrder = new CustomerOrder();
@@ -80,6 +82,11 @@ public class OrderService {
         return customerOrderRepository.save(newCustomerOrder);
     }
 
+    private Customer updateLastAccessTime(Customer customer) {
+        customer = customerRepository.save(customer.setLastAccessDate(LocalDateTime.now()));
+        return customer;
+    }
+
     /**
      * Change customerOrderRepository status of specific customerOrderRepository with given id
      *
@@ -87,7 +94,6 @@ public class OrderService {
      * @param form only <code>orderStatus</code> field is required
      */
     public CustomerOrder modifyStatus(long id, OrderForm form) {
-        log.info("Method: modifyStatus(), id: {}, form: {}", id, form);
         customerOrderRepository.findById(id).ifPresent(it -> {
             if (Objects.nonNull(form.getOrderStatus())) {
                 it.setOrderStatus(OrderStatus.parse(form.getOrderStatus()))
@@ -97,5 +103,17 @@ public class OrderService {
         });
         return customerOrderRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("No such customerOrderRepository with id " + id));
+    }
+
+    private OrderItem createOrderItem(OrderItemForm form) {
+        Commodity commodity = commodityRepository
+                .findById(form.getCommodityId())
+                .orElseThrow(() -> new NoSuchElementException(
+                        "No such commodity! Please check the commodity Id."));
+        OrderItem newOrderItem = new OrderItem();
+        newOrderItem.setCommodity(commodity)
+                .setAmount(form.getAmount());
+        return orderItemRepository.save(newOrderItem);
+
     }
 }
