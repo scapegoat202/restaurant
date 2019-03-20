@@ -11,7 +11,7 @@ import java.util.List;
  * Order Repository
  */
 public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, Long> {
-    List<CustomerOrder> findByStore(Store store);
+    List<CustomerOrder> findAllByStore(Store store);
 
     List<CustomerOrder> findAllByOrderStatus(OrderStatus status);
 }

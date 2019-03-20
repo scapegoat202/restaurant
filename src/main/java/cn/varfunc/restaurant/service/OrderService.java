@@ -41,7 +41,7 @@ public class OrderService {
 
     public List<CustomerOrder> getAllByStoreId(long storeId) {
         Store store = storeService.findById(storeId);
-        return customerOrderRepository.findByStore(store);
+        return customerOrderRepository.findAllByStore(store);
     }
 
     /**
