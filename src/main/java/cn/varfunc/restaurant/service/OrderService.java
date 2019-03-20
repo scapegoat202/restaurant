@@ -40,7 +40,8 @@ public class OrderService {
     }
 
     public List<CustomerOrder> getAllByStoreId(long storeId) {
-        return customerOrderRepository.findByStoreId(storeId);
+        Store store = storeService.findById(storeId);
+        return customerOrderRepository.findByStore(store);
     }
 
     /**

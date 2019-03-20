@@ -28,8 +28,9 @@ public class OrderController {
         return orderService.getById(id);
     }
 
-    @GetMapping("/{storeId}")
-    public List<CustomerOrder> getAllOrdersByStoreId(@PathVariable long storeId) {
+    @GetMapping
+    public List<CustomerOrder> getAllOrdersByStoreId(
+            @RequestParam(name = "storeId") long storeId) {
         return orderService.getAllByStoreId(storeId);
     }
 
