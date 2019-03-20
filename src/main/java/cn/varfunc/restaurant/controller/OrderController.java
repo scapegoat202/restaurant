@@ -2,6 +2,7 @@ package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.OrderForm;
 import cn.varfunc.restaurant.domain.model.CustomerOrder;
+import cn.varfunc.restaurant.domain.model.OrderStatus;
 import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,24 @@ public class OrderController {
         return orderService.getById(id);
     }
 
+    /**
+     * Get all orders of specific store
+     */
     @GetMapping
     public ApiResponse getAllOrdersByStoreId(
             @RequestParam(name = "storeId") long storeId) {
         List<CustomerOrder> orders = orderService.getAllByStoreId(storeId);
+        return ApiResponse.builder()
+                .data(orders)
+                .build();
+    }
+
+    /**
+     * Get all orders with the status of <code>OrderStatus.SUBMITTED</code>
+     */
+    @GetMapping("/pending")
+    public ApiResponse getAllPendingOrders() {
+        List<CustomerOrder> orders = orderService.getAllByOrderStatus(OrderStatus.SUBMITTED);
         return ApiResponse.builder()
                 .data(orders)
                 .build();
