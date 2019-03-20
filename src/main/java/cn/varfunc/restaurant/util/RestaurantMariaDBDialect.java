@@ -3,9 +3,11 @@ package cn.varfunc.restaurant.util;
 import org.hibernate.dialect.MariaDB103Dialect;
 
 /**
- * Modify default database dialect
+ * Modify default database dialect, if you're using MariaDB as the DB layer, please change
+ * Hibernate database dialect to this class in the spring boot configuration file in order
+ * to enable the support for utf8mb4 character set support without altering database settings.
  */
-public class MyMariaDBDialect extends MariaDB103Dialect {
+public class RestaurantMariaDBDialect extends MariaDB103Dialect {
     /**
      * Specify character set to <code>utf8mb4</code> while creating database table
      * so you don't have to change the database configuration.
