@@ -34,4 +34,12 @@ public class CustomerController {
     public Customer newCustomer(@RequestBody CustomerForm form) {
         return customerService.addCustomer(form);
     }
+
+    /**
+     * Modify the information of given id
+     */
+    @PatchMapping("/{id}")
+    public Customer modifyCustomerInformation(@RequestBody CustomerForm form, @PathVariable long id) {
+        return customerService.modifyInformation(id, form);
+    }
 }
