@@ -10,4 +10,6 @@ public class StoreForm {
     private String announcement;
     private String workingGroup;
     private Address address;
+    private String username;
+    private String password;
 }
