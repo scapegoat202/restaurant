@@ -19,12 +19,14 @@ public class Store {
     /**
      * Username for login
      */
+    @Column(unique = true, updatable = false, nullable = false)
     private String username;
 
     /**
      * Password, this should be the SHA256 hash of the real password.
      */
     @JsonIgnore
+    @Column(nullable = false)
     private String password;
 
     /**
