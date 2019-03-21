@@ -11,6 +11,6 @@ import javax.persistence.Embeddable;
 public class Address {
     private String province;
     private String city;
-    private String townshipOrStreet;
+    private String county;
     private String details;
 }
