@@ -22,7 +22,7 @@ public class Store {
     private String username;
 
     /**
-     * Password for login
+     * Password, this should be the SHA256 hash of the real password.
      */
     @JsonIgnore
     private String password;
