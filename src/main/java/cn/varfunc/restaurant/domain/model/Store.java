@@ -14,8 +14,18 @@ import java.util.List;
 public class Store {
     @Id
     @GeneratedValue
-
     private long id;
+
+    /**
+     * Username for login
+     */
+    private String username;
+
+    /**
+     * Password for login
+     */
+    private String password;
+
     /**
      * Store name
      */
