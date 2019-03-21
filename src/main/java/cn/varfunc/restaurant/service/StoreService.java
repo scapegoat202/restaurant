@@ -42,7 +42,9 @@ public class StoreService {
                 .setPhoneNumber(form.getPhoneNumber())
                 .setAnnouncement(form.getAnnouncement())
                 .setAddress(form.getAddress())
-                .setWorkingGroup(form.getWorkingGroup());
+                .setWorkingGroup(form.getWorkingGroup())
+                .setUsername(form.getUsername())
+                .setPassword(form.getPassword());
         return storeRepository.save(newStore);
     }
 
