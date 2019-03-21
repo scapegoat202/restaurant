@@ -1,5 +1,6 @@
 package cn.varfunc.restaurant.service;
 
+import cn.varfunc.restaurant.domain.form.LoginForm;
 import cn.varfunc.restaurant.domain.form.StoreForm;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.StoreRepository;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -77,4 +79,20 @@ public class StoreService {
         return storeRepository.save(pre);
     }
 
+    /**
+     * Validate login
+     */
+    public boolean validateUsernameAndPassword(LoginForm form) {
+        final String username = form.getUsername();
+        final String password = form.getPassword();
+
+        if (Objects.nonNull(username) && !username.isBlank()) {
+            if (Objects.nonNull(password) && !password.isBlank()) {
+                Store store = storeRepository.findByUsername(username)
+                        .orElseThrow(() -> new NoSuchElementException("No such store! Please check the username"));
+                return Objects.equals(store.getPassword(), password);
+            }
+        }
+        return false;
+    }
 }
