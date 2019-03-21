@@ -24,6 +24,7 @@ public class Store {
     /**
      * Password for login
      */
+    @JsonIgnore
     private String password;
 
     /**
