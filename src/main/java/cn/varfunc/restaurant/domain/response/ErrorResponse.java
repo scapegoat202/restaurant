@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Builder
 @Data
 @Accessors(chain = true)
-public class ApiResponse {
+public class ErrorResponse {
     @Builder.Default
     private String message = "No message available";
     private Object data;

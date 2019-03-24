@@ -1,22 +1,18 @@
 package cn.varfunc.restaurant.util;
 
-import cn.varfunc.restaurant.domain.response.ApiResponse;
-import org.springframework.http.HttpStatus;
+import cn.varfunc.restaurant.domain.response.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiResponse handleNoSuchElementExceptionException(NoSuchElementException e) {
-        return ApiResponse.builder()
+    public ErrorResponse handleException(Exception e) {
+        return ErrorResponse.builder()
                 .message(e.getMessage())
+                .data(e.getStackTrace())
                 .build();
     }
 }
