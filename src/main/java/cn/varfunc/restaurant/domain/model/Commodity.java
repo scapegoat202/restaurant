@@ -1,5 +1,6 @@
 package cn.varfunc.restaurant.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -45,6 +46,9 @@ public class Commodity {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<>();
 
-    @Lob
-    private byte[] image;
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Store store;
+
+    private String imageUrl;
 }
