@@ -46,7 +46,7 @@ public class CustomerOrder {
      * Number of the table.
      */
     @Column(nullable = false, updatable = false)
-    private Integer tableNumber;
+    private String tableNumber;
 
     /**
      * the Customer this order belongs to.

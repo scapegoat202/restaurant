@@ -1,28 +1,32 @@
 package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.CommodityForm;
+import cn.varfunc.restaurant.domain.model.Category;
 import cn.varfunc.restaurant.domain.model.Commodity;
 import cn.varfunc.restaurant.domain.model.Store;
+import cn.varfunc.restaurant.service.CategoryService;
 import cn.varfunc.restaurant.service.CommodityService;
 import cn.varfunc.restaurant.service.StoreService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/commodities")
 public class CommodityController {
     private final StoreService storeService;
     private final CommodityService commodityService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public CommodityController(StoreService storeService, CommodityService commodityService) {
+    public CommodityController(StoreService storeService,
+                               CommodityService commodityService,
+                               CategoryService categoryService) {
         this.storeService = storeService;
         this.commodityService = commodityService;
+        this.categoryService = categoryService;
     }
 
     /**
@@ -55,7 +59,15 @@ public class CommodityController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public Commodity addCommodity(@RequestBody CommodityForm form) {
-        return commodityService.create(form);
+        final Long storeId = form.getStoreId();
+        final List<Long> categoryIds = form.getCategories();
+        final Store store = storeService.findById(storeId);
+        final List<Category> categories = categoryService.findAllByIds(categoryIds);
+        return commodityService.create(form.getName(),
+                form.getPrice(),
+                form.getInventory(),
+                store,
+                categories);
     }
 
     /**
@@ -66,6 +78,7 @@ public class CommodityController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public Commodity modifyCommodity(@PathVariable long id, @RequestBody CommodityForm form) {
-        return commodityService.modifyInformation(id, form);
+        List<Category> categories = categoryService.findAllByIds(form.getCategories());
+        return commodityService.modify(id, form.getName(), form.getPrice(), form.getInventory(), categories);
     }
 }

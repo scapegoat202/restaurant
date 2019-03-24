@@ -1,6 +1,5 @@
 package cn.varfunc.restaurant.service;
 
-import cn.varfunc.restaurant.domain.form.CustomerForm;
 import cn.varfunc.restaurant.domain.model.Customer;
 import cn.varfunc.restaurant.domain.model.CustomerOrder;
 import cn.varfunc.restaurant.domain.model.Gender;
@@ -8,6 +7,7 @@ import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.CustomerOrderRepository;
 import cn.varfunc.restaurant.domain.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,17 +38,15 @@ public class CustomerService {
 
     /**
      * Add a new customerRepository.
-     *
-     * @param form information needed for describing a new customerRepository, the <code>name</code> and
-     *             <code>gender</code> fields are required.
      */
-    public Customer create(CustomerForm form) {
+    public Customer create(@NonNull String name, Gender gender, String email,
+                           @NonNull LocalDate registerDate, @NonNull LocalDateTime lastAccessTime) {
         Customer newCustomer = new Customer();
-        newCustomer.setName(form.getName())
-                .setGender(Gender.parse(form.getGender()))
-                .setEmail(form.getEmail())
-                .setRegisterDate(LocalDate.now())
-                .setLastAccessDate(LocalDateTime.now());
+        newCustomer.setName(name)
+                .setGender(gender)
+                .setEmail(email)
+                .setRegisterDate(registerDate)
+                .setLastAccessDate(lastAccessTime);
         return customerRepository.save(newCustomer);
     }
 
@@ -69,24 +67,23 @@ public class CustomerService {
     /**
      * Modify customerRepository information by given id.
      */
-    public Customer modifyInformation(long id, CustomerForm form) {
+    public Customer modify(long id, String name, String email, Gender gender) {
         Customer customer = findById(id);
         boolean isModified = false;
 
-        if (Objects.nonNull(form.getName()) &&
-                !Objects.equals(form.getName(), customer.getName())) {
-            customer.setName(form.getName());
+        if (Objects.nonNull(name) &&
+                !Objects.equals(name, customer.getName())) {
+            customer.setName(name);
             isModified = true;
         }
 
-        if (Objects.nonNull(form.getEmail()) &&
-                !Objects.equals(form.getEmail(), customer.getEmail())) {
-            customer.setEmail(form.getEmail());
+        if (Objects.nonNull(email) &&
+                !Objects.equals(email, customer.getEmail())) {
+            customer.setEmail(email);
             isModified = true;
         }
 
-        Gender gender = Gender.parse(form.getGender());
-        if (Objects.nonNull(form.getGender()) &&
+        if (Objects.nonNull(gender) &&
                 !Objects.equals(gender, customer.getGender())) {
             customer.setGender(gender);
             isModified = true;
@@ -97,4 +94,13 @@ public class CustomerService {
         }
         return customer;
     }
+
+    /**
+     * Record the very last time of the customer's visit
+     */
+    public Customer updateLastAccessTime(Customer customer) {
+        customer = customerRepository.save(customer.setLastAccessDate(LocalDateTime.now()));
+        return customer;
+    }
+
 }

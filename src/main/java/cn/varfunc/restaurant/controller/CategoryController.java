@@ -5,14 +5,13 @@ import cn.varfunc.restaurant.domain.model.Category;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.service.CategoryService;
 import cn.varfunc.restaurant.service.StoreService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
-@Slf4j
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -54,7 +53,10 @@ public class CategoryController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public Category createCategory(@RequestBody CategoryForm form) {
-        return categoryService.create(form);
+        final String name = Objects.requireNonNull(form.getName());
+        final Long storeId = Objects.requireNonNull(form.getStoreId());
+        final Store store = storeService.findById(storeId);
+        return categoryService.create(name, store);
     }
 
     /**
@@ -65,7 +67,8 @@ public class CategoryController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public Category modifyCategory(@PathVariable long id, @RequestBody CategoryForm form) {
-        return categoryService.modifyInformation(id, form);
+        final String name = Objects.requireNonNull(form.getName());
+        return categoryService.modify(id, name);
     }
 
     /**

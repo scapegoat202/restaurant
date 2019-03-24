@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -57,11 +55,4 @@ public class Store {
      */
     @Embedded
     private Address address;
-
-    /**
-     * All categories of the Store
-     */
-    @JsonIgnore
-    @OneToMany(mappedBy = "store")
-    private List<Category> categories = new ArrayList<>();
 }

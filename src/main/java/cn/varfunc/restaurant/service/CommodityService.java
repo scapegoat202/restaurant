@@ -1,87 +1,78 @@
 package cn.varfunc.restaurant.service;
 
-import cn.varfunc.restaurant.domain.form.CommodityForm;
+
+import cn.varfunc.restaurant.domain.model.Category;
 import cn.varfunc.restaurant.domain.model.Commodity;
 import cn.varfunc.restaurant.domain.model.Store;
-import cn.varfunc.restaurant.domain.repository.CategoryRepository;
 import cn.varfunc.restaurant.domain.repository.CommodityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 @Service
 public class CommodityService {
     private final CommodityRepository commodityRepository;
-    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CommodityService(CommodityRepository commodityRepository,
-                            CategoryRepository categoryRepository) {
+    public CommodityService(CommodityRepository commodityRepository) {
         this.commodityRepository = commodityRepository;
-        this.categoryRepository = categoryRepository;
     }
 
     /**
      * Get a commodityRepository instance by given id.
      */
-    public Commodity findById(long id) {
+    public Commodity findById(@NonNull long id) {
         return commodityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such commodityRepository!"));
     }
 
-    public List<Commodity> findAllByStore(Store store) {
+    public List<Commodity> findAllByStore(@NonNull Store store) {
         return commodityRepository.findAllByStore(store);
     }
 
     /**
      * Add a new commodityRepository instance.
-     *
-     * @param form Information needed for describing a new commodityRepository, <code>name</code> and
-     *             <code>price</code> fields are required.
      */
-    public Commodity create(CommodityForm form) {
+    public Commodity create(@NonNull String name, @NonNull BigDecimal price, Long inventory, @NonNull Store store, List<Category> categories) {
         // TODO: 2019/3/7 Validation is required before creating commodity
-
         Commodity newCommodity = new Commodity();
-        newCommodity.setName(form.getName())
-                .setPrice(form.getPrice())
-                .setInventory(form.getInventory());
-        form.getCategories().stream()
-                .map(id -> categoryRepository.findById(id)
-                        .orElseThrow(() -> new NoSuchElementException(
-                                "No such category! Please check your id.")))
-                .forEach(newCommodity.getCategories()::add);
+        newCommodity.setName(requireNonNull(name))
+                .setPrice(requireNonNull(price))
+                .setInventory(inventory)
+                .setStore(requireNonNull(store))
+                .setCategories(categories);
         return commodityRepository.save(newCommodity);
     }
 
     /**
      * Modify specified commodityRepository's information by given id.
-     *
-     * @param form only fields that have to be updated are needed.
      */
-    public Commodity modifyInformation(long id, CommodityForm form) {
+    public Commodity modify(@NonNull long id, String name, BigDecimal price, Long inventory, List<Category> categories) {
         commodityRepository.findById(id).ifPresent(it -> {
-            if (Objects.nonNull(form.getName()) &&
-                    !Objects.equals(form.getName(), it.getName())) {
-                it.setName(form.getName());
+            if (Objects.nonNull(name) &&
+                    !Objects.equals(name, it.getName())) {
+                it.setName(name);
             }
 
-            if (Objects.nonNull(form.getPrice()) &&
-                    !Objects.equals(form.getPrice(), it.getPrice())) {
-                it.setPrice(form.getPrice());
+            if (Objects.nonNull(price) &&
+                    !Objects.equals(price, it.getPrice())) {
+                it.setPrice(price);
             }
 
-            if (Objects.nonNull(form.getInventory()) &&
-                    !Objects.equals(form.getInventory(), it.getInventory())) {
-                it.setInventory(form.getInventory());
+            if (Objects.nonNull(inventory) &&
+                    !Objects.equals(inventory, it.getInventory())) {
+                it.setInventory(inventory);
             }
 
-            if (Objects.nonNull(form.getCategories()) &&
-                    form.getCategories().size() != 0) {
-                it.setCategories(categoryRepository.findAllById(form.getCategories()));
+            if (Objects.nonNull(categories) && categories.size() != 0) {
+                it.setCategories(categories);
             }
             // Save changes to database
             commodityRepository.save(it);

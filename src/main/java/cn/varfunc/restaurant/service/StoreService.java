@@ -1,15 +1,18 @@
 package cn.varfunc.restaurant.service;
 
 import cn.varfunc.restaurant.domain.form.LoginForm;
-import cn.varfunc.restaurant.domain.form.StoreForm;
+import cn.varfunc.restaurant.domain.model.Address;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.nonNull;
 
 @Service
 public class StoreService {
@@ -40,50 +43,51 @@ public class StoreService {
 
     /**
      * Create a new storeRepository instance.
-     *
-     * @param form information needed for creating a new storeRepository, <code>name</code> field
-     *             can not be <code>null</code> or blank.
      */
-    public Store create(StoreForm form) {
+    public Store create(@NonNull String username, @NonNull String password, @NonNull String name,
+                        String phoneNumber, String announcement, Address address, String workingGroup) {
         Store newStore = new Store();
-        newStore.setName(form.getName())
-                .setPhoneNumber(form.getPhoneNumber())
-                .setAnnouncement(form.getAnnouncement())
-                .setAddress(form.getAddress())
-                .setWorkingGroup(form.getWorkingGroup())
-                .setUsername(form.getUsername())
-                .setPassword(form.getPassword());
+        newStore.setName(name)
+                .setPhoneNumber(phoneNumber)
+                .setAnnouncement(announcement)
+                .setAddress(address)
+                .setWorkingGroup(workingGroup)
+                .setUsername(username)
+                .setPassword(password);
         return storeRepository.save(newStore);
     }
 
     /**
      * Modify specified storeRepository's information.
      *
-     * @param id   the id of storeRepository whose information need to be modified
-     * @param form the information to be updated
+     * @param id the id of storeRepository whose information need to be modified
      */
-    public Store modifyInformation(long id, StoreForm form) {
-        Store pre = storeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No such storeRepository!"));
+    public Store modifyInformation(long id, String name, String announcement, String workingGroup,
+                                   String phoneNumber, Address address) {
+        Store pre = findById(id);
 
-        if (form.getName() != null && !form.getName().equals(pre.getName())) {
-            pre.setName(form.getName());
+        if (nonNull(name) && !Objects.equals(name, pre.getName())) {
+            pre.setName(name);
         }
 
-        if (form.getAnnouncement() != null && !form.getAnnouncement().equals(pre.getAnnouncement())) {
-            pre.setAnnouncement(form.getAnnouncement());
+        if (nonNull(announcement)
+                && !Objects.equals(announcement, pre.getAnnouncement())) {
+            pre.setAnnouncement(announcement);
         }
 
-        if (form.getWorkingGroup() != null && !form.getWorkingGroup().equals(pre.getWorkingGroup())) {
-            pre.setWorkingGroup(form.getWorkingGroup());
+        if (nonNull(phoneNumber)
+                && !Objects.equals(phoneNumber, pre.getWorkingGroup())) {
+            pre.setWorkingGroup(phoneNumber);
         }
 
-        if (form.getPhoneNumber() != null && !form.getPhoneNumber().equals(pre.getPhoneNumber())) {
-            pre.setPhoneNumber(form.getPhoneNumber());
+        if (nonNull(phoneNumber) &&
+                !Objects.equals(phoneNumber, pre.getPhoneNumber())) {
+            pre.setPhoneNumber(phoneNumber);
         }
 
-        if (form.getAddress() != null && !form.getAddress().equals(pre.getAddress())) {
-            pre.setAddress(form.getAddress());
+        if (nonNull(address) &&
+                !Objects.equals(address, pre.getAddress())) {
+            pre.setAddress(address);
         }
         // Save changes to database
         return storeRepository.save(pre);

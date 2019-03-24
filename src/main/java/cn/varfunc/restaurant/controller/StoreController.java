@@ -3,13 +3,13 @@ package cn.varfunc.restaurant.controller;
 import cn.varfunc.restaurant.domain.form.StoreForm;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.service.StoreService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/stores")
 public class StoreController {
@@ -45,7 +45,11 @@ public class StoreController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public Store createStore(@RequestBody StoreForm form) {
-        return storeService.create(form);
+        final String username = Objects.requireNonNull(form.getUsername());
+        final String password = Objects.requireNonNull(form.getPassword());
+        final String name = Objects.requireNonNull(form.getName());
+        return storeService.create(username, password, name, form.getPhoneNumber(), form.getAnnouncement(),
+                form.getAddress(), form.getWorkingGroup());
     }
 
     /**
@@ -54,7 +58,8 @@ public class StoreController {
     @PatchMapping("/{id}")
     @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Store modifyStoreInfo(@RequestBody @Validated StoreForm form, @PathVariable long id) {
-        return storeService.modifyInformation(id, form);
+    public Store modifyStoreInformation(@PathVariable long id, @RequestBody @Validated StoreForm form) {
+        return storeService.modifyInformation(id, form.getName(), form.getAnnouncement(),
+                form.getWorkingGroup(), form.getPhoneNumber(), form.getAddress());
     }
 }
