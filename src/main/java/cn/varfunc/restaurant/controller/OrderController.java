@@ -4,11 +4,11 @@ import cn.varfunc.restaurant.domain.form.OrderForm;
 import cn.varfunc.restaurant.domain.model.CustomerOrder;
 import cn.varfunc.restaurant.domain.model.OrderStatus;
 import cn.varfunc.restaurant.domain.model.Store;
-import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.OrderService;
 import cn.varfunc.restaurant.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +30,8 @@ public class OrderController {
      * Get an order instance by given id.
      */
     @GetMapping("/{id}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public CustomerOrder getOrderById(@PathVariable long id) {
         return orderService.findById(id);
     }
@@ -38,48 +40,43 @@ public class OrderController {
      * Get all orders of specific store
      */
     @GetMapping
-    public ApiResponse getAllOrdersByStoreId(
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<CustomerOrder> getAllOrdersByStoreId(
             @RequestParam(name = "storeId") long storeId) {
         Store store = storeService.findById(storeId);
-        List<CustomerOrder> orders = orderService.findAllByStore(store);
-        return ApiResponse.builder()
-                .data(orders)
-                .build();
+        return orderService.findAllByStore(store);
     }
 
     /**
      * Get all orders with the status of <code>OrderStatus.SUBMITTED</code>
      */
     @GetMapping("/pending")
-    public ApiResponse getAllPendingOrders() {
-        List<CustomerOrder> orders = orderService.findAllByOrderStatus(OrderStatus.SUBMITTED);
-        return ApiResponse.builder()
-                .data(orders)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<CustomerOrder> getAllPendingOrders() {
+        return orderService.findAllByOrderStatus(OrderStatus.SUBMITTED);
     }
 
     /**
      * Create an order instance
      */
     @PostMapping
-    public ApiResponse createOrder(@RequestBody OrderForm form) {
-        CustomerOrder order = orderService.create(form);
-        return ApiResponse.builder()
-                .data(order)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public CustomerOrder createOrder(@RequestBody OrderForm form) {
+        return orderService.create(form);
     }
 
     /**
      * Change order status of specific order of given id
-     *
-     * @param id   id of the order
+     *  @param id   id of the order
      * @param form only <code>orderStatus</code> field is required
      */
     @PatchMapping("/{id}")
-    public ApiResponse changeStatus(@PathVariable long id, @RequestBody OrderForm form) {
-        CustomerOrder order = orderService.modifyStatus(id, form);
-        return ApiResponse.builder()
-                .data(order)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public CustomerOrder changeStatus(@PathVariable long id, @RequestBody OrderForm form) {
+        return orderService.modifyStatus(id, form);
     }
 }

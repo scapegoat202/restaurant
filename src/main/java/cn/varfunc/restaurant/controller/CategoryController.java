@@ -2,10 +2,10 @@ package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.CategoryForm;
 import cn.varfunc.restaurant.domain.model.Category;
-import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -23,11 +23,10 @@ public class CategoryController {
      * Get category's information by given id, encode the <code>ID</code> in the url
      */
     @GetMapping("/{id}")
-    public ApiResponse getCategory(@PathVariable long id) {
-        Category category = categoryService.findById(id);
-        return ApiResponse.builder()
-                .data(category)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public Category getCategory(@PathVariable long id) {
+        return categoryService.findById(id);
     }
 
     /**
@@ -35,11 +34,10 @@ public class CategoryController {
      * Required fields: <code>name</code>, <code>storeId</code>
      */
     @PostMapping
-    public ApiResponse createCategory(@RequestBody CategoryForm form) {
-        Category category = categoryService.create(form);
-        return ApiResponse.builder()
-                .data(category)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Category createCategory(@RequestBody CategoryForm form) {
+        return categoryService.create(form);
     }
 
     /**
@@ -47,10 +45,9 @@ public class CategoryController {
      * Only the modified field are needed
      */
     @PatchMapping("/{id}")
-    public ApiResponse modifyCategoryInfo(@PathVariable long id, @RequestBody CategoryForm form) {
-        Category category = categoryService.modifyInformation(id, form);
-        return ApiResponse.builder()
-                .data(category)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Category modifyCategoryInfo(@PathVariable long id, @RequestBody CategoryForm form) {
+        return categoryService.modifyInformation(id, form);
     }
 }

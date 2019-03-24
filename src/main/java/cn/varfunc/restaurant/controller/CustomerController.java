@@ -3,11 +3,11 @@ package cn.varfunc.restaurant.controller;
 import cn.varfunc.restaurant.domain.form.CustomerForm;
 import cn.varfunc.restaurant.domain.model.Customer;
 import cn.varfunc.restaurant.domain.model.Store;
-import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.CustomerService;
 import cn.varfunc.restaurant.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,20 +29,18 @@ public class CustomerController {
      * Get customer's information by given id, encode the <code>id</code> in the url
      */
     @GetMapping("/{id}")
-    public ApiResponse getCustomer(@PathVariable long id) {
-        Customer customer = customerService.findById(id);
-        return ApiResponse.builder()
-                .data(customer)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public Customer getCustomer(@PathVariable long id) {
+        return customerService.findById(id);
     }
 
     @GetMapping
-    public ApiResponse getAllCustomersByStoreId(@RequestParam(name = "storeId") long storeId) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<Customer> getAllCustomersByStoreId(@RequestParam(name = "storeId") long storeId) {
         Store store = storeService.findById(storeId);
-        List<Customer> customers = customerService.findAllByStore(store);
-        return ApiResponse.builder()
-                .data(customers)
-                .build();
+        return customerService.findAllByStore(store);
     }
 
     /**
@@ -50,21 +48,19 @@ public class CustomerController {
      * required field: <code>name</code>, <code>gender</code>
      */
     @PostMapping
-    public ApiResponse newCustomer(@RequestBody CustomerForm form) {
-        Customer customer = customerService.create(form);
-        return ApiResponse.builder()
-                .data(customer)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Customer newCustomer(@RequestBody CustomerForm form) {
+        return customerService.create(form);
     }
 
     /**
      * Modify the information of given id
      */
     @PatchMapping("/{id}")
-    public ApiResponse modifyCustomerInformation(@RequestBody CustomerForm form, @PathVariable long id) {
-        Customer customer = customerService.modifyInformation(id, form);
-        return ApiResponse.builder()
-                .data(customer)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Customer modifyCustomerInformation(@RequestBody CustomerForm form, @PathVariable long id) {
+        return customerService.modifyInformation(id, form);
     }
 }

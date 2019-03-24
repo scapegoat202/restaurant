@@ -2,10 +2,10 @@ package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.StoreForm;
 import cn.varfunc.restaurant.domain.model.Store;
-import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +24,17 @@ public class StoreController {
      * Get a store's information by given id, encode the <code>id</code> in the <code>url</code>
      */
     @GetMapping("/{id}")
-    public ApiResponse getStore(@PathVariable long id) {
-        Store store = storeService.findById(id);
-        return ApiResponse.builder()
-                .data(store)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public Store getStore(@PathVariable long id) {
+        return storeService.findById(id);
+    }
+
+    @GetMapping
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public Store getStoreByUsername(@RequestParam String username) {
+        return storeService.findByUsername(username);
     }
 
     /**
@@ -36,21 +42,19 @@ public class StoreController {
      * Required field: <code>name</code>
      */
     @PostMapping
-    public ApiResponse createStore(@RequestBody StoreForm form) {
-        Store store = storeService.create(form);
-        return ApiResponse.builder()
-                .data(store)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Store createStore(@RequestBody StoreForm form) {
+        return storeService.create(form);
     }
 
     /**
      * Modify specified store's information by given id, only modified fields are needed
      */
     @PatchMapping("/{id}")
-    public ApiResponse modifyStoreInfo(@RequestBody @Validated StoreForm form, @PathVariable long id) {
-        Store store = storeService.modifyInformation(id, form);
-        return ApiResponse.builder()
-                .data(store)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Store modifyStoreInfo(@RequestBody @Validated StoreForm form, @PathVariable long id) {
+        return storeService.modifyInformation(id, form);
     }
 }

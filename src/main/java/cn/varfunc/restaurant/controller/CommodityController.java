@@ -2,10 +2,10 @@ package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.CommodityForm;
 import cn.varfunc.restaurant.domain.model.Commodity;
-import cn.varfunc.restaurant.domain.response.ApiResponse;
 import cn.varfunc.restaurant.service.CommodityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -23,11 +23,10 @@ public class CommodityController {
      * Get commodity's information by given id, encode the <code>id</code> in the url
      */
     @GetMapping("/{id}")
-    public ApiResponse getCommodityById(@PathVariable long id) {
-        Commodity commodity = commodityService.findById(id);
-        return ApiResponse.builder()
-                .data(commodity)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public Commodity getCommodityById(@PathVariable long id) {
+        return commodityService.findById(id);
     }
 
     /**
@@ -35,11 +34,10 @@ public class CommodityController {
      * Required fields: <code>name</code>, <code>price</code>
      */
     @PostMapping
-    public ApiResponse addCommodity(@RequestBody CommodityForm form) {
-        Commodity commodity = commodityService.create(form);
-        return ApiResponse.builder()
-                .data(commodity)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Commodity addCommodity(@RequestBody CommodityForm form) {
+        return commodityService.create(form);
     }
 
     /**
@@ -47,10 +45,9 @@ public class CommodityController {
      * Only modified fields are needed.
      */
     @PatchMapping("/{id}")
-    public ApiResponse modifyCommodityInfo(@PathVariable long id, @RequestBody CommodityForm form) {
-        Commodity commodity = commodityService.modifyInformation(id, form);
-        return ApiResponse.builder()
-                .data(commodity)
-                .build();
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public Commodity modifyCommodityInfo(@PathVariable long id, @RequestBody CommodityForm form) {
+        return commodityService.modifyInformation(id, form);
     }
 }
