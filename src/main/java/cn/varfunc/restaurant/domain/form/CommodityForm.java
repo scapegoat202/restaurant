@@ -10,5 +10,6 @@ public class CommodityForm {
     private String name;
     private BigDecimal price;
     private Long inventory;
+    private Long storeId;
     private List<Long> categories;
 }
