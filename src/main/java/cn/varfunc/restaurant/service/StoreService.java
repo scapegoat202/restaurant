@@ -21,13 +21,21 @@ public class StoreService {
     }
 
     /**
-     * Get a storeRepository instance by given id.
+     * Get a store instance by given id.
      */
     public Store findById(long id) throws NoSuchElementException {
         Optional<Store> store = this.storeRepository.findById(id);
         return store.orElseThrow(() -> {
             throw new NoSuchElementException("No such Store!");
         });
+    }
+
+    /**
+     * Get a store instance by given username
+     */
+    public Store findByUsername(String username) {
+        return storeRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("No such store! Please check your username"));
     }
 
     /**
