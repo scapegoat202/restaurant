@@ -47,7 +47,7 @@ public class CommodityController {
     @PatchMapping("/{id}")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public Commodity modifyCommodityInfo(@PathVariable long id, @RequestBody CommodityForm form) {
+    public Commodity modifyCommodity(@PathVariable long id, @RequestBody CommodityForm form) {
         return commodityService.modifyInformation(id, form);
     }
 }

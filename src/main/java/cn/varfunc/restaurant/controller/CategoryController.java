@@ -47,7 +47,7 @@ public class CategoryController {
     @PatchMapping("/{id}")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public Category modifyCategoryInfo(@PathVariable long id, @RequestBody CategoryForm form) {
+    public Category modifyCategory(@PathVariable long id, @RequestBody CategoryForm form) {
         return categoryService.modifyInformation(id, form);
     }
 }

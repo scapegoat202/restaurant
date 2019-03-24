@@ -50,7 +50,7 @@ public class CustomerController {
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public Customer newCustomer(@RequestBody CustomerForm form) {
+    public Customer addCustomer(@RequestBody CustomerForm form) {
         return customerService.create(form);
     }
 
@@ -60,7 +60,7 @@ public class CustomerController {
     @PatchMapping("/{id}")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public Customer modifyCustomerInformation(@RequestBody CustomerForm form, @PathVariable long id) {
+    public Customer modifyCustomer(@RequestBody CustomerForm form, @PathVariable long id) {
         return customerService.modifyInformation(id, form);
     }
 }
