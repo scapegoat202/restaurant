@@ -2,11 +2,13 @@ package cn.varfunc.restaurant.service;
 
 import cn.varfunc.restaurant.domain.form.CommodityForm;
 import cn.varfunc.restaurant.domain.model.Commodity;
+import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.CategoryRepository;
 import cn.varfunc.restaurant.domain.repository.CommodityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -28,6 +30,10 @@ public class CommodityService {
     public Commodity findById(long id) {
         return commodityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such commodityRepository!"));
+    }
+
+    public List<Commodity> findAllByStore(Store store) {
+        return commodityRepository.findAllByStore(store);
     }
 
     /**
