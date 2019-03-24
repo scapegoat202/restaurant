@@ -50,4 +50,13 @@ public class CategoryController {
     public Category modifyCategory(@PathVariable long id, @RequestBody CategoryForm form) {
         return categoryService.modifyInformation(id, form);
     }
+
+    /**
+     * Delete category by given id
+     */
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable long id) {
+        categoryService.deleteById(id);
+    }
 }

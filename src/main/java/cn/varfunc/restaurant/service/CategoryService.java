@@ -61,4 +61,11 @@ public class CategoryService {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No such categoryRepository!"));
     }
+
+    /**
+     * Delete category by given id
+     */
+    public void deleteById(long id) {
+        categoryRepository.deleteById(id);
+    }
 }
