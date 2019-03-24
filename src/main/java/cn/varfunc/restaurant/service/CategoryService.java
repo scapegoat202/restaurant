@@ -8,6 +8,7 @@ import cn.varfunc.restaurant.domain.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class CategoryService {
     }
 
     /**
-     * Add a new categoryRepository.
+     * Add a new category.
      *
      * @param form information needed for describing a new categoryRepository, <code>name</code>
      *             and <code>storeId</code> are required
@@ -39,7 +40,7 @@ public class CategoryService {
     }
 
     /**
-     * Get a categoryRepository instance by given id.
+     * Get a category instance by given id.
      */
     public Category findById(long id) {
         Optional<Category> category = this.categoryRepository.findById(id);
@@ -47,7 +48,14 @@ public class CategoryService {
     }
 
     /**
-     * Modify specified categoryRepository's information of given id.
+     * Get all categories of a given store
+     */
+    public List<Category> findAllByStore(Store store) {
+        return categoryRepository.findAllByStore(store);
+    }
+
+    /**
+     * Modify specified category's information of given id.
      *
      * @param form <code>name</code> are required, <code>storeId</code> can't be updated.
      */
