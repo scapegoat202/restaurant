@@ -3,6 +3,7 @@ package cn.varfunc.restaurant.controller;
 import cn.varfunc.restaurant.domain.form.CommodityForm;
 import cn.varfunc.restaurant.domain.model.Category;
 import cn.varfunc.restaurant.domain.model.Commodity;
+import cn.varfunc.restaurant.domain.model.CommodityStatus;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.service.CategoryService;
 import cn.varfunc.restaurant.service.CommodityService;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/commodities")
@@ -63,11 +66,13 @@ public class CommodityController {
         final List<Long> categoryIds = form.getCategories();
         final Store store = storeService.findById(storeId);
         final List<Category> categories = categoryService.findAllByIds(categoryIds);
+        final UUID uuid = UUID.fromString(form.getUuid());
         return commodityService.create(form.getName(),
                 form.getPrice(),
                 form.getInventory(),
                 store,
-                categories);
+                categories,
+                uuid);
     }
 
     /**
@@ -78,7 +83,22 @@ public class CommodityController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public Commodity modifyCommodity(@PathVariable long id, @RequestBody CommodityForm form) {
-        List<Category> categories = categoryService.findAllByIds(form.getCategories());
-        return commodityService.modify(id, form.getName(), form.getPrice(), form.getInventory(), categories);
+        List<Category> categories = null;
+        if (Objects.nonNull(form.getCategories())) {
+            categories = categoryService.findAllByIds(form.getCategories());
+        }
+        // TODO: 2019/3/25 Optimize this someday
+        CommodityStatus status;
+        if (Objects.isNull(form.getStatus())) {
+            status = null;
+        } else {
+            CommodityStatus s = CommodityStatus.parse(form.getStatus());
+            if (!Objects.equals(s, CommodityStatus.UNKNOWN)) {
+                status = s;
+            } else {
+                status = null;
+            }
+        }
+        return commodityService.modify(id, form.getName(), form.getPrice(), form.getInventory(), categories, status);
     }
 }
