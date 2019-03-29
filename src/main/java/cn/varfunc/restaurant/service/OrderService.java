@@ -1,7 +1,7 @@
 package cn.varfunc.restaurant.service;
 
 import cn.varfunc.restaurant.domain.model.*;
-import cn.varfunc.restaurant.domain.repository.*;
+import cn.varfunc.restaurant.domain.repository.CustomerOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -16,22 +16,10 @@ import java.util.Optional;
 @Service
 public class OrderService {
     private final CustomerOrderRepository customerOrderRepository;
-    private final StoreRepository storeRepository;
-    private final CustomerRepository customerRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final CommodityRepository commodityRepository;
 
     @Autowired
-    public OrderService(CustomerOrderRepository customerOrderRepository,
-                        StoreRepository storeRepository,
-                        CustomerRepository customerRepository,
-                        OrderItemRepository orderItemRepository,
-                        CommodityRepository commodityRepository) {
+    public OrderService(CustomerOrderRepository customerOrderRepository) {
         this.customerOrderRepository = customerOrderRepository;
-        this.storeRepository = storeRepository;
-        this.customerRepository = customerRepository;
-        this.orderItemRepository = orderItemRepository;
-        this.commodityRepository = commodityRepository;
     }
 
     /**
@@ -39,8 +27,7 @@ public class OrderService {
      */
     public CustomerOrder findById(long id) {
         Optional<CustomerOrder> orderOptional = customerOrderRepository.findById(id);
-        return orderOptional.orElseThrow(
-                () -> new NoSuchElementException("No such customer order!"));
+        return orderOptional.orElseThrow(() -> new NoSuchElementException("No such customer order!"));
     }
 
     public List<CustomerOrder> findAllByStore(Store store) {
@@ -74,17 +61,17 @@ public class OrderService {
     }
 
     /**
-     * Change customerOrderRepository status of specific customerOrderRepository with given id
+     * Change customerOrderRepository status of specific customerOrderRepository
+     * with given id
      *
      * @param id id of the customerOrderRepository
      */
     public CustomerOrder modifyStatus(long id, @NonNull OrderStatus status) {
         customerOrderRepository.findById(id).ifPresent(it -> {
-            it.setOrderStatus(status)
-                    .setTimeFinished(LocalDateTime.now());
+            it.setOrderStatus(status).setTimeFinished(LocalDateTime.now());
             customerOrderRepository.save(it);
         });
-        return customerOrderRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("No such customerOrderRepository with id " + id));
+        return customerOrderRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No such customerOrderRepository with id " + id));
     }
 }
