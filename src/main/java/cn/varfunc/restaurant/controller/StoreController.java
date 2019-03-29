@@ -49,7 +49,7 @@ public class StoreController {
         final String password = Objects.requireNonNull(form.getPassword());
         final String name = Objects.requireNonNull(form.getName());
         return storeService.create(username, password, name, form.getPhoneNumber(), form.getAnnouncement(),
-                form.getAddress(), form.getWorkingGroup());
+                form.getAddress(), form.getWorkingGroup(), form.getUuid());
     }
 
     /**

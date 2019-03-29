@@ -45,7 +45,7 @@ public class StoreService {
      * Create a new storeRepository instance.
      */
     public Store create(@NonNull String username, @NonNull String password, @NonNull String name,
-                        String phoneNumber, String announcement, Address address, String workingGroup) {
+                        String phoneNumber, String announcement, Address address, String workingGroup, String uuid) {
         Store newStore = new Store();
         newStore.setName(name)
                 .setPhoneNumber(phoneNumber)
@@ -53,7 +53,8 @@ public class StoreService {
                 .setAddress(address)
                 .setWorkingGroup(workingGroup)
                 .setUsername(username)
-                .setPassword(password);
+                .setPassword(password)
+                .setImageUUID(uuid);
         return storeRepository.save(newStore);
     }
 
