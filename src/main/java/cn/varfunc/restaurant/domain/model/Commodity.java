@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -50,5 +51,8 @@ public class Commodity {
     @ManyToOne(cascade = CascadeType.ALL)
     private Store store;
 
-    private String imageUrl;
+    @Enumerated(EnumType.STRING)
+    private CommodityStatus status;
+
+    private UUID imageUUID;
 }
