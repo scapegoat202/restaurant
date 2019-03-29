@@ -55,4 +55,7 @@ public class Store {
      */
     @Embedded
     private Address address;
+
+    @Column(name = "image_uuid")
+    private String imageUUID;
 }
