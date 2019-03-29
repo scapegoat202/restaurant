@@ -12,4 +12,6 @@ public class CommodityForm {
     private Long inventory;
     private Long storeId;
     private List<Long> categories;
+    private String status;
+    private String uuid;
 }
