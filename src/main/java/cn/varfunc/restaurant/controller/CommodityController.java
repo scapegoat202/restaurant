@@ -32,7 +32,7 @@ public class CommodityController {
                                CommodityService commodityService,
                                CategoryService categoryService,
                                FileService fileService,
-                               @Value("${cn.varfunc.restaurant.minio.bucketName}") String bucketName) {
+                               @Value("${cn.varfunc.restaurant.minio.bucket-name}") String bucketName) {
         this.storeService = storeService;
         this.commodityService = commodityService;
         this.categoryService = categoryService;
