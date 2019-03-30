@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -57,5 +58,8 @@ public class Store {
     private Address address;
 
     @Column(name = "image_uuid")
-    private String imageUUID;
+    private UUID imageUUID;
+
+    @Transient
+    private String imageURL;
 }

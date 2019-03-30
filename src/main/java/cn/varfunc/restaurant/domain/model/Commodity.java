@@ -54,5 +54,9 @@ public class Commodity {
     @Enumerated(EnumType.STRING)
     private CommodityStatus status;
 
+    @Column(name = "image_uuid")
     private UUID imageUUID;
+
+    @Transient
+    private String imageURL;
 }
