@@ -7,8 +7,10 @@ import cn.varfunc.restaurant.domain.model.CommodityStatus;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.service.CategoryService;
 import cn.varfunc.restaurant.service.CommodityService;
+import cn.varfunc.restaurant.service.FileService;
 import cn.varfunc.restaurant.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +24,20 @@ public class CommodityController {
     private final StoreService storeService;
     private final CommodityService commodityService;
     private final CategoryService categoryService;
+    private final FileService fileService;
+    private final String bucketName;
 
     @Autowired
     public CommodityController(StoreService storeService,
                                CommodityService commodityService,
-                               CategoryService categoryService) {
+                               CategoryService categoryService,
+                               FileService fileService,
+                               @Value("${cn.varfunc.restaurant.minio.bucketName}") String bucketName) {
         this.storeService = storeService;
         this.commodityService = commodityService;
         this.categoryService = categoryService;
+        this.fileService = fileService;
+        this.bucketName = bucketName;
     }
 
     /**
@@ -39,7 +47,9 @@ public class CommodityController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public Commodity getCommodityById(@PathVariable long id) {
-        return commodityService.findById(id);
+        Commodity commodity = commodityService.findById(id);
+        String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
+        return commodity.setImageURL(url);
     }
 
     /**
@@ -50,7 +60,12 @@ public class CommodityController {
     @ResponseStatus(HttpStatus.OK)
     public List<Commodity> getAllCommodities(@RequestParam(name = "storeId") long storeId) {
         Store store = storeService.findById(storeId);
-        return commodityService.findAllByStore(store);
+        List<Commodity> commodities = commodityService.findAllByStore(store);
+        for (Commodity commodity : commodities) {
+            String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
+            commodity.setImageURL(url);
+        }
+        return commodities;
     }
 
 
@@ -67,12 +82,15 @@ public class CommodityController {
         final Store store = storeService.findById(storeId);
         final List<Category> categories = categoryService.findAllByIds(categoryIds);
         final UUID uuid = UUID.fromString(form.getUuid());
-        return commodityService.create(form.getName(),
+        Commodity commodity = commodityService.create(form.getName(),
                 form.getPrice(),
                 form.getInventory(),
                 store,
                 categories,
                 uuid);
+        String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
+        return commodity.setImageURL(url);
+
     }
 
     /**
@@ -99,6 +117,13 @@ public class CommodityController {
                 status = null;
             }
         }
-        return commodityService.modify(id, form.getName(), form.getPrice(), form.getInventory(), categories, status);
+        Commodity commodity = commodityService.modify(id,
+                form.getName(),
+                form.getPrice(),
+                form.getInventory(),
+                categories,
+                status);
+        String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
+        return commodity.setImageURL(url);
     }
 }
