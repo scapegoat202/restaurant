@@ -2,8 +2,10 @@ package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.domain.form.StoreForm;
 import cn.varfunc.restaurant.domain.model.Store;
+import cn.varfunc.restaurant.service.FileService;
 import cn.varfunc.restaurant.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,15 @@ import java.util.Objects;
 @RequestMapping("/stores")
 public class StoreController {
     private final StoreService storeService;
+    private final FileService fileService;
+    private final String bucketName;
 
     @Autowired
-    public StoreController(StoreService storeService) {
+    public StoreController(StoreService storeService, FileService fileService,
+                           @Value("${cn.varfunc.restaurant.minio.bucketName}") String bucketName) {
         this.storeService = storeService;
+        this.fileService = fileService;
+        this.bucketName = bucketName;
     }
 
     /**
@@ -27,14 +34,18 @@ public class StoreController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public Store getStore(@PathVariable long id) {
-        return storeService.findById(id);
+        Store store = storeService.findById(id);
+        String url = fileService.getFileURL(this.bucketName, store.getImageUUID());
+        return store.setImageURL(url);
     }
 
     @GetMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public Store getStoreByUsername(@RequestParam String username) {
-        return storeService.findByUsername(username);
+        Store store = storeService.findByUsername(username);
+        String url = fileService.getFileURL(this.bucketName, store.getImageUUID());
+        return store.setImageURL(url);
     }
 
     /**
@@ -48,8 +59,10 @@ public class StoreController {
         final String username = Objects.requireNonNull(form.getUsername());
         final String password = Objects.requireNonNull(form.getPassword());
         final String name = Objects.requireNonNull(form.getName());
-        return storeService.create(username, password, name, form.getPhoneNumber(), form.getAnnouncement(),
+        Store store = storeService.create(username, password, name, form.getPhoneNumber(), form.getAnnouncement(),
                 form.getAddress(), form.getWorkingGroup(), form.getUuid());
+        String url = fileService.getFileURL(this.bucketName, store.getImageUUID());
+        return store.setImageURL(url);
     }
 
     /**
@@ -59,7 +72,9 @@ public class StoreController {
     @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Store modifyStoreInformation(@PathVariable long id, @RequestBody @Validated StoreForm form) {
-        return storeService.modifyInformation(id, form.getName(), form.getAnnouncement(),
+        Store store = storeService.modifyInformation(id, form.getName(), form.getAnnouncement(),
                 form.getWorkingGroup(), form.getPhoneNumber(), form.getAddress());
+        String url = fileService.getFileURL(this.bucketName, store.getImageUUID());
+        return store.setImageURL(url);
     }
 }
