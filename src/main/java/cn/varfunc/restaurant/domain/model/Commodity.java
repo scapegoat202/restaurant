@@ -32,6 +32,11 @@ public class Commodity {
     private BigDecimal price;
 
     /**
+     * Description of commodity
+     */
+    private String description;
+
+    /**
      * Inventory of this commodity.
      */
     private Long inventory;
