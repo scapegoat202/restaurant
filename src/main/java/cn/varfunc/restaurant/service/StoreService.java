@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
@@ -54,7 +55,7 @@ public class StoreService {
                 .setWorkingGroup(workingGroup)
                 .setUsername(username)
                 .setPassword(password)
-                .setImageUUID(uuid);
+                .setImageUUID(UUID.fromString(uuid));
         return storeRepository.save(newStore);
     }
 
