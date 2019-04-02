@@ -24,6 +24,9 @@ public class FileService {
     public void putFile(String bucketName, UUID uuid, InputStream stream, long size, String contentType) {
         //noinspection TryWithIdenticalCatches
         try {
+            if (!this.client.bucketExists(bucketName)) {
+                this.client.makeBucket(bucketName);
+            }
             this.client.putObject(bucketName, uuid.toString(), stream, size, contentType);
         } catch (InvalidBucketNameException e) {
             e.printStackTrace();
@@ -44,6 +47,8 @@ public class FileService {
         } catch (InternalException e) {
             e.printStackTrace();
         } catch (InvalidArgumentException e) {
+            e.printStackTrace();
+        } catch (RegionConflictException e) {
             e.printStackTrace();
         }
     }
