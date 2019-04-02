@@ -10,6 +10,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ErrorResponse handleException(Exception e) {
+        e.printStackTrace();
         return ErrorResponse.builder()
                 .message(e.getMessage())
                 .data(e.getStackTrace())
