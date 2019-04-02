@@ -60,7 +60,7 @@ public class StoreController {
         final String password = Objects.requireNonNull(form.getPassword());
         final String name = Objects.requireNonNull(form.getName());
         Store store = storeService.create(username, password, name, form.getPhoneNumber(), form.getAnnouncement(),
-                form.getAddress(), form.getWorkingGroup(), form.getUuid());
+                form.getAddress(), form.getWorkingGroup(), form.getImageUUID());
         String url = fileService.getFileURL(this.bucketName, store.getImageUUID());
         return store.setImageURL(url);
     }

@@ -81,7 +81,7 @@ public class CommodityController {
         final List<Long> categoryIds = form.getCategories();
         final Store store = storeService.findById(storeId);
         final List<Category> categories = categoryService.findAllByIds(categoryIds);
-        final UUID uuid = UUID.fromString(form.getUuid());
+        final UUID uuid = UUID.fromString(form.getImageUUID());
         Commodity commodity = commodityService.create(form.getName(),
                 form.getPrice(),
                 form.getInventory(),
@@ -90,7 +90,6 @@ public class CommodityController {
                 uuid);
         String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
         return commodity.setImageURL(url);
-
     }
 
     /**
