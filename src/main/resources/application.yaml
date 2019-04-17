@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/restaurant
+    username: scapegoat
+    password: 123456
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    show-sql: true
+    database-platform: cn.varfunc.restaurant.util.RestaurantMariaDBDialect
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 1MB
+
+server:
+  port: 8088
+
+
+cn:
+  varfunc:
+    restaurant:
+      minio:
+        endpoint: https://play.minio.io:9000
+        access-key: Q3AM3UQ867SPQQA43P2F
+        secret-key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+        bucket-name: restaurant
+      jwt:
+        token-header: Authorization
+        key: rN3Pin7mzPUaEBmyfhM0GNd07hyGyfdf
+
+logging:
+  level:
+    cn:
+      varfunc:
+        restaurant: debug
