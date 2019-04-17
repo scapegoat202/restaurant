@@ -1,6 +1,7 @@
 package cn.varfunc.restaurant.controller;
 
 import cn.varfunc.restaurant.service.FileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/file")
 public class FileController {
@@ -24,13 +26,13 @@ public class FileController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public String uploadFile(@RequestParam(name = "file") MultipartFile file,
-                             @Value("${cn.varfunc.restaurant.minio.bucket-name}") String bucketName) {
+                             @Value("${cn.varfunc.restaurant.minio.bucket-name}") String bucketName)
+            throws IOException {
         UUID uuid = UUID.randomUUID();
-        try {
-            fileService.putFile(bucketName, uuid, file.getInputStream(), file.getSize(), file.getContentType());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fileService.putFile(bucketName, uuid, file.getInputStream(), file.getSize(), file.getContentType());
+
+        log.debug("image uuid: {}", uuid.toString());
+
         return uuid.toString();
     }
 }

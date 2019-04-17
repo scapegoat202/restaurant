@@ -4,6 +4,7 @@ import cn.varfunc.restaurant.domain.form.LoginForm;
 import cn.varfunc.restaurant.domain.model.Address;
 import cn.varfunc.restaurant.domain.model.Store;
 import cn.varfunc.restaurant.domain.repository.StoreRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 public class StoreService {
     private final StoreRepository storeRepository;
@@ -47,6 +49,8 @@ public class StoreService {
      */
     public Store create(@NonNull String username, @NonNull String password, @NonNull String name,
                         String phoneNumber, String announcement, Address address, String workingGroup, String uuid) {
+        log.debug("image uuid: {}", uuid);
+
         Store newStore = new Store();
         newStore.setName(name)
                 .setPhoneNumber(phoneNumber)
@@ -56,6 +60,7 @@ public class StoreService {
                 .setUsername(username)
                 .setPassword(password)
                 .setImageUUID(UUID.fromString(uuid));
+
         return storeRepository.save(newStore);
     }
 

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class MyConfiguration {
+public class RestaurantConfig {
     private static MinioClient minioClient = null;
 
     @Bean
@@ -20,9 +20,8 @@ public class MyConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("*")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH");
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTION");
             }
-
         };
     }
 
