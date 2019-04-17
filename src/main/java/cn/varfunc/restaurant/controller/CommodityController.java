@@ -58,8 +58,8 @@ public class CommodityController {
     @GetMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<Commodity> getAllCommodities(@RequestParam(name = "storeId") Long storeId,
-                                             @RequestParam(name = "categoryId") Long categoryId) {
+    public List<Commodity> getAllCommodities(@RequestParam(name = "storeId", required = false) Long storeId,
+                                             @RequestParam(name = "categoryId", required = false) Long categoryId) {
         if (storeId != null && categoryId == null) {
             Store store = storeService.findById(storeId);
             List<Commodity> commodities = commodityService.findAllByStore(store);
@@ -101,7 +101,8 @@ public class CommodityController {
                 form.getInventory(),
                 store,
                 categories,
-                uuid);
+                uuid,
+                form.getDescription());
         String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
         return commodity.setImageURL(url);
     }
@@ -135,7 +136,8 @@ public class CommodityController {
                 form.getPrice(),
                 form.getInventory(),
                 categories,
-                status);
+                status,
+                form.getDescription());
         String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
         return commodity.setImageURL(url);
     }

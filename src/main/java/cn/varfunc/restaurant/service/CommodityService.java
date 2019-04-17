@@ -50,13 +50,14 @@ public class CommodityService {
      * Add a new commodityRepository instance.
      */
     public Commodity create(@NonNull String name, @NonNull BigDecimal price, Long inventory, @NonNull Store store,
-                            List<Category> categories, UUID uuid) {
+                            List<Category> categories, UUID uuid, String description) {
         // TODO: 2019/3/7 Validation is required before creating commodity
         Commodity newCommodity = new Commodity();
         newCommodity.setName(requireNonNull(name))
                 .setPrice(requireNonNull(price))
                 .setInventory(inventory)
                 .setStore(requireNonNull(store))
+                .setDescription(description)
                 .setCategories(categories)
                 .setStatus(CommodityStatus.NORMAL)
                 .setImageUUID(uuid);
@@ -67,7 +68,7 @@ public class CommodityService {
      * Modify specified commodityRepository's information by given id.
      */
     public Commodity modify(@NonNull long id, String name, BigDecimal price, Long inventory,
-                            List<Category> categories, CommodityStatus status) {
+                            List<Category> categories, CommodityStatus status, String description) {
         commodityRepository.findById(id).ifPresent(it -> {
             if (Objects.nonNull(name) &&
                     !Objects.equals(name, it.getName())) {
@@ -91,6 +92,11 @@ public class CommodityService {
             if (Objects.nonNull(status) &&
                     !Objects.equals(status, it.getStatus())) {
                 it.setStatus(status);
+            }
+
+            if (Objects.nonNull(description) &&
+                    !Objects.equals(description, it.getDescription())) {
+                it.setDescription(description);
             }
             // Save changes to database
             commodityRepository.save(it);
