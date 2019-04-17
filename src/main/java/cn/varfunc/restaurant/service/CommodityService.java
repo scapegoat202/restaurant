@@ -42,6 +42,10 @@ public class CommodityService {
                 .collect(Collectors.toList());
     }
 
+    public List<Commodity> findAllByCategory(@NonNull Category category) {
+        return category.getCommodities();
+    }
+
     /**
      * Add a new commodityRepository instance.
      */

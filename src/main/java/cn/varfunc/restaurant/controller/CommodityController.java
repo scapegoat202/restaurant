@@ -58,7 +58,7 @@ public class CommodityController {
     @GetMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<Commodity> getAllCommodities(@RequestParam(name = "storeId") long storeId) {
+    public List<Commodity> getAllCommoditiesStore(@RequestParam(name = "storeId") long storeId) {
         Store store = storeService.findById(storeId);
         List<Commodity> commodities = commodityService.findAllByStore(store);
         for (Commodity commodity : commodities) {
@@ -68,6 +68,13 @@ public class CommodityController {
         return commodities;
     }
 
+    @GetMapping
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<Commodity> getAllCommoditiesByCategory(@RequestParam(name = "categoryId") long categoryId) {
+        Category category = categoryService.findById(categoryId);
+        return commodityService.findAllByCategory(category);
+    }
 
     /**
      * Add a commodity<br>
