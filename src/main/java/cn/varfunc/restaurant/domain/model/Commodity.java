@@ -45,7 +45,7 @@ public class Commodity {
      * the Category this commodity belongs to.
      */
     @JsonIgnoreProperties("commodities")
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(
             name = "category_commodity",
             joinColumns = @JoinColumn(name = "commodity_id"),
