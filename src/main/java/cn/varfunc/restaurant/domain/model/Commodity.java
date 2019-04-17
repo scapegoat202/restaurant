@@ -1,7 +1,6 @@
 package cn.varfunc.restaurant.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -44,7 +43,6 @@ public class Commodity {
     /**
      * the Category this commodity belongs to.
      */
-    @JsonIgnoreProperties("commodities")
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(
             name = "category_commodity",

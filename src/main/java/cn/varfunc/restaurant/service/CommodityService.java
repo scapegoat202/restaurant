@@ -43,7 +43,7 @@ public class CommodityService {
     }
 
     public List<Commodity> findAllByCategory(@NonNull Category category) {
-        return category.getCommodities();
+        return commodityRepository.findAllByCategories(category);
     }
 
     /**
