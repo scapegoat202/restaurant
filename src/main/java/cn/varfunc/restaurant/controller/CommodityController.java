@@ -58,22 +58,29 @@ public class CommodityController {
     @GetMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<Commodity> getAllCommoditiesStore(@RequestParam(name = "storeId") long storeId) {
-        Store store = storeService.findById(storeId);
-        List<Commodity> commodities = commodityService.findAllByStore(store);
-        for (Commodity commodity : commodities) {
-            String url = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
-            commodity.setImageURL(url);
+    public List<Commodity> getAllCommodities(@RequestParam(name = "storeId") Long storeId,
+                                             @RequestParam(name = "categoryId") Long categoryId) {
+        if (storeId != null && categoryId == null) {
+            Store store = storeService.findById(storeId);
+            List<Commodity> commodities = commodityService.findAllByStore(store);
+            return setImageUrl(commodities);
         }
-        return commodities;
+
+        if (storeId == null && categoryId != null) {
+            Category category = categoryService.findById(categoryId);
+            List<Commodity> commodities = commodityService.findAllByCategory(category);
+            return setImageUrl(commodities);
+        }
+
+        throw new IllegalArgumentException("请求参数不正确");
     }
 
-    @GetMapping
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public List<Commodity> getAllCommoditiesByCategory(@RequestParam(name = "categoryId") long categoryId) {
-        Category category = categoryService.findById(categoryId);
-        return commodityService.findAllByCategory(category);
+    private List<Commodity> setImageUrl(List<Commodity> commodities) {
+        for (Commodity commodity : commodities) {
+            String fileURL = fileService.getFileURL(this.bucketName, commodity.getImageUUID());
+            commodity.setImageURL(fileURL);
+        }
+        return commodities;
     }
 
     /**
